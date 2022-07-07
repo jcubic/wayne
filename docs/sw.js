@@ -1,4 +1,4 @@
-import { Wayne } from '../index.js';
+import { Wayne } from 'https://cdn.jsdelivr.net/gh/jcubic/wayne@master/index.js';
 
 const app = new Wayne();
 
