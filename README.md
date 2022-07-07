@@ -116,7 +116,7 @@ each of those methods accepts string as first argument. Second argument are opti
 
 * Idea of the name of this library came from movie Wayne's World 2 where Wayne is dressed up as Construction Worker
 
-[![Watch the video](https://img.youtube.com/vi/89W-lCTFT2o/maxresdefault.jpg)](https://youtu.be/89W-lCTFT2o)
+[![Watch the video](https://github.com/jcubic/wayne/blob/master/assets/wayne's-world-screen-capture.png?raw=true)](https://youtu.be/89W-lCTFT2o)
 
 I hightly recommend both movies if you didn't seen them already.
 
