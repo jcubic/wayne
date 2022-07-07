@@ -1,12 +1,12 @@
 {
-  "name": "wayne",
+  "name": "@jcubic/wayne",
   "version": "0.1.0",
   "description": "Service Worker Routing",
   "type": "module",
   "main": "index.js",
   "scripts": {
   },
-  "keywords": ["service-worker", "server", "http", "fake", "artifical"],
+  "keywords": ["service-worker", "server", "http", "fake", "artifical", "http-server"],
   "author": "Jakub T. Jankiewicz <jcubic@onet.pl> (https://jcubic.pl/me/)",
   "license": "MIT"
 }
