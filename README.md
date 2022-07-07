@@ -67,6 +67,11 @@ app.get('/user/{id}', function(req, res) {
 });
 ```
 
+## Demo
+
+See [simple demo](https://jcubic.github.io/wayne) the service worker is defined
+as code above.
+
 ## API reference
 
 Wayne object has those methods that corenspond to HTTP methods
