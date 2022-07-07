@@ -114,6 +114,12 @@ each of those methods accepts string as first argument. Second argument are opti
 ## Aknowledge
 * Part of the content of this README was based on text from [MDN](https://developer.mozilla.org/).
 
+* Idea of the name of this library came from movie Wayne's World 2 where Wayne is dressed up as Construction Worker
+
+[![Watch the video](https://img.youtube.com/vi/89W-lCTFT2o/maxresdefault.jpg)](https://youtu.be/89W-lCTFT2o)
+
+I hightly recommend both movies if you didn't seen them already.
+
 ## License
 
 Released with [MIT](http://opensource.org/licenses/MIT) license<br/>
