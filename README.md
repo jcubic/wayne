@@ -26,11 +26,11 @@ Standard way of installing the service worker as ES Module
 
 ```javascript
 if ('serviceWorker' in navigator) {
-    var scope = location.pathname.replace(/\/[^\/]+$/, '/');
+    const scope = location.pathname.replace(/\/[^\/]+$/, '/');
     navigator.serviceWorker.register('sw.js', {scope, type: 'module'})
              .then(function(reg) {
                  reg.addEventListener('updatefound', function() {
-                     var installingWorker = reg.installing;
+                     const installingWorker = reg.installing;
                      console.log('A new service worker is being installed:',
                                  installingWorker);
                  });
