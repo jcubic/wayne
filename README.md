@@ -134,18 +134,25 @@ each of those methods accepts string as first argument. Second argument are opti
 * `status` - The status code for the response, e.g., 200.
 * `type` - Content-Type of the response (MIME).
 
+## Story
+
+The idea for using Service worker to serve pure in browser HTTP request has long history.
+I've first described the ussage of this techique in this article from 2018: [How to create Web Server in Browser](https://jcubic.wordpress.com/2018/05/23/how-to-create-web-server-from-browser/). In June of 2022 I've came up with cool new way of using this technique and and while creating PoC for the article I'm going to write (will update this story when ready) I've realized that I can extract all the logic of creating this fake HTTP requests into a library. And this is how Wayne was born.
+
+Idea of the name of the library came from movie Wayne's World 2 where Wayne is dressed up as Construction Worker
+
+[![Watch the video](https://github.com/jcubic/wayne/blob/master/assets/wayne's-world-screen-capture.png?raw=true)](https://youtu.be/89W-lCTFT2o)
+
+I hightly recommend both movies if you didn't seen them already.
+
+
 ## Contribution
 If you have any ideas for an improvement don't hesitate to create an issue.
 Code contributions are also welcome.
 
 ## Aknowledge
 * Part of the content of this README was based on text from [MDN](https://developer.mozilla.org/).
-
-* Idea of the name of this library came from movie Wayne's World 2 where Wayne is dressed up as Construction Worker
-
-[![Watch the video](https://github.com/jcubic/wayne/blob/master/assets/wayne's-world-screen-capture.png?raw=true)](https://youtu.be/89W-lCTFT2o)
-
-I hightly recommend both movies if you didn't seen them already.
+* Logo use illustration from [OpenClipart](https://openclipart.org/detail/320906/hard-hat).
 
 ## License
 
