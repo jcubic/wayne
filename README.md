@@ -41,6 +41,21 @@ if ('serviceWorker' in navigator) {
                      console.log('Registration failed with ' + error);
              });
 }
+
+
+function get(url) {
+    fetch(url)
+      .then(res => res.text())
+      .then(text => output.innerHTML = text);
+}
+
+input.addEventListener('click', () => {
+    get(`./user/${user_id.value}`);
+});
+
+error.addEventListener('click', () => {
+    get(`./error`);
+});
 ```
 
 
@@ -64,6 +79,10 @@ app.get('/user/{id}', function(req, res) {
   } else {
     res.json({error: 'User Not Found'});
   }
+});
+
+app.get('/error', function(req, res) {
+  nonExisting();
 });
 ```
 
