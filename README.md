@@ -135,7 +135,7 @@ each of those methods accepts string as first argument. Second argument are opti
 * `type` - Content-Type of the response (MIME).
 
 ## Contribution
-If you have any ideas for an improvement to hesitate to create an issue.
+If you have any ideas for an improvement don't hesitate to create an issue.
 Code contributions are also welcome.
 
 ## Aknowledge
