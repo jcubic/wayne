@@ -21,7 +21,7 @@ npm install @jcubic/wayne
 yarn add @jcubic/wayne
 ```
 
-Installing service worker as ES Module
+Standard way of installing the service worker as ES Module
 
 
 ```javascript
@@ -41,8 +41,12 @@ if ('serviceWorker' in navigator) {
                      console.log('Registration failed with ' + error);
              });
 }
+```
 
+Inside same file you can send [AJAX](https://en.wikipedia.org/wiki/Ajax_(programming)) requests with standard
+[fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).
 
+```javascript
 function get(url) {
     fetch(url)
       .then(res => res.text())
