@@ -112,8 +112,8 @@ Here are few most important Request properties:
 
 * `headers` - Headers object to get key/value pairs use `Object.fromEntires(req.headers.entries())`.
 * `method` - request method as string.
-* `url` - string with full URL
-* `referrer` - HTTP referer
+* `url` - string with full URL.
+* `referrer` - HTTP referer.
 * `arrayBuffer()` - Returns a promise that resolves with an [ArrayBuffer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer) representation of the request body.
 * `blob()` - Returns a promise that resolves with a [Blob](https://developer.mozilla.org/en-US/docs/Web/API/Blob) representation of the request body.
 * `formData()` - Returns a promise that resolves with a [FormData](https://developer.mozilla.org/en-US/docs/Web/API/FormData) representation of the request body.
@@ -122,10 +122,10 @@ Here are few most important Request properties:
 
 **Response** object is instance of HTTPResponse that have methods:
 
-* `html`
-* `json`
-* `text`
-* `send`
+* `html()`
+* `json()`
+* `text()`
+* `send()`
 
 each of those methods accepts string as first argument. Second argument are options:
 
@@ -133,6 +133,10 @@ each of those methods accepts string as first argument. Second argument are opti
 * `statusText` - The status message associated with the status code, e.g., OK.
 * `status` - The status code for the response, e.g., 200.
 * `type` - Content-Type of the response (MIME).
+
+## Contribution
+If you have any ideas for an improvement to hesitate to create an issue.
+Code contributions are also welcome.
 
 ## Aknowledge
 * Part of the content of this README was based on text from [MDN](https://developer.mozilla.org/).
