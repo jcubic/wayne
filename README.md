@@ -137,7 +137,7 @@ each of those methods accepts string as first argument. Second argument are opti
 ## Story
 
 The idea for using Service worker to serve pure in browser HTTP request has long history.
-I've first described the ussage of this techique in this article from 2018: [How to create Web Server in Browser](https://jcubic.wordpress.com/2018/05/23/how-to-create-web-server-from-browser/). In June 2022 I've came up with cool new way of using this technique and and while creating PoC for the article I'm going to write (will update this story when ready) I've realized that I can extract all the logic of creating those fake HTTP requests into a library. And this is how Wayne was born.
+I've first described the usage of this techique in this article from 2018: [How to create Web Server in Browser](https://jcubic.wordpress.com/2018/05/23/how-to-create-web-server-from-browser/). In June 2022 I've came up with cool new way of using this technique and and while creating PoC for the article I'm going to write (will update this story when ready) I've realized that I can extract all the logic of creating those fake HTTP requests into a library. And this is how Wayne was born.
 
 Idea of the name of the library came from movie Wayne's World 2 where Wayne is dressed up as Construction Worker
 
