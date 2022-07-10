@@ -143,7 +143,7 @@ Idea of the name of the library came from movie Wayne's World 2 where Wayne is d
 
 [![Watch the video](https://github.com/jcubic/wayne/blob/master/assets/wayne's-world-screen-capture.png?raw=true)](https://youtu.be/89W-lCTFT2o)
 
-I hightly recommend both movies if you didn't seen them already.
+I hightly recommend both movies if you haven't seen them already.
 
 
 ## Contribution
