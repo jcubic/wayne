@@ -97,7 +97,7 @@ as code above.
 
 ## API reference
 
-Wayne object has those methods that corenspond to HTTP methods
+Wayne object has those methods that correspond to HTTP methods
 
 * `get`
 * `post`
