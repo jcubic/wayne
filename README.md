@@ -4,6 +4,7 @@
 </h1>
 
 [![npm](https://img.shields.io/badge/npm-0.1.0-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
 
 [Service Worker Routing library for in browser HTTP requests](https://github.com/jcubic/wayne/)
 
@@ -149,6 +150,8 @@ I hightly recommend both movies if you haven't seen them already.
 ## Contribution
 If you have any ideas for an improvement don't hesitate to create an issue.
 Code contributions are also welcome.
+
+**Working on your first Pull Request?** You can learn how from this *free* series [How to Contribute to an Open Source Project on GitHub](https://kcd.im/pull-request)
 
 ## Aknowledge
 * Part of the content of this README was based on text from [MDN](https://developer.mozilla.org/).
