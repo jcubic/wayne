@@ -10,6 +10,8 @@
 
 It's like express.js inside Service Worker.
 
+Most of the time Service Worker is used for caching of HTTP requests and making the app work when there is no internet (mostly for <abbr title="Progressive Web App">PWA</abbr>), but in fact you can create completely new responses to requests that never leave the browser. This library make that easier by adding simple API similar to expres.js.
+
 ## Usage
 
 Installation from npm:
