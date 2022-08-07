@@ -8,9 +8,9 @@
 
 [Service Worker Routing library for in browser HTTP requests](https://github.com/jcubic/wayne/)
 
-It's like express.js inside Service Worker.
+It's like Express inside Service Worker.
 
-Most of the time Service Worker is used for caching of HTTP requests and making the app work when there is no internet (mostly for [PWA](https://en.wikipedia.org/wiki/Progressive_web_application)), but in fact you can create completely new responses to requests that never leave the browser. This library make that easier by adding simple API similar to expres.js.
+Most of the time Service Worker is used for caching of HTTP requests and making the app work when there is no internet (mostly for [PWA](https://en.wikipedia.org/wiki/Progressive_web_application)), but in fact you can create completely new responses to requests that never leave the browser. This library make that easier by adding simple API similar to Express.
 
 ## Usage
 
