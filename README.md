@@ -3,7 +3,7 @@
        alt="Logo of Wayne library - it represent constrution worker helmet and text with the name of the library" />
 </h1>
 
-[![npm](https://img.shields.io/badge/npm-0.1.0-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
+[![npm](https://img.shields.io/badge/npm-0.2.0-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
 
 [Service Worker Routing library for in browser HTTP requests](https://github.com/jcubic/wayne/)
@@ -24,13 +24,33 @@ npm install @jcubic/wayne
 yarn add @jcubic/wayne
 ```
 
-Standard way of installing the service worker as ES Module
-
+Standard way of installing the service worker
 
 ```javascript
 if ('serviceWorker' in navigator) {
     const scope = location.pathname.replace(/\/[^\/]+$/, '/');
-    navigator.serviceWorker.register('sw.js', {scope, type: 'module'})
+    navigator.serviceWorker.register('sw.js', { scope, type: 'module' })
+             .then(function(reg) {
+                 reg.addEventListener('updatefound', function() {
+                     const installingWorker = reg.installing;
+                     console.log('A new service worker is being installed:',
+                                 installingWorker);
+                 });
+                 // registration worked
+                 console.log('Registration succeeded. Scope is ' + reg.scope);
+             }).catch(function(error) {
+                 // registration failed
+                 console.log('Registration failed with ' + error);
+             });
+}
+```
+
+If you want to support browsers that don't support ES Modules in Service Worker use this instead:
+
+```javascript
+if ('serviceWorker' in navigator) {
+    const scope = location.pathname.replace(/\/[^\/]+$/, '/');
+    navigator.serviceWorker.register('sw.js', { scope })
              .then(function(reg) {
                  reg.addEventListener('updatefound', function() {
                      const installingWorker = reg.installing;
@@ -66,13 +86,29 @@ error.addEventListener('click', () => {
 ```
 
 
-Service worker - **sw.js** file - the file import library from CDN.
+Service worker - **sw.js** file
 
-```javascript
+Importing Wayne module:
+
+* when worker created as ES Module
+
+```javascript 
 import { Wayne } from 'https://cdn.jsdelivr.net/npm/@jcubic/wayne';
 
 const app = new Wayne();
+```
 
+* When worker created as normal script
+
+```javascript
+importScripts('https://cdn.jsdelivr.net/npm/@jcubic/wayne/index.umd.min.js');
+
+const app = new wayne.Wayne();
+```
+
+Using the library
+
+```javascript
 const users = {
   1: 'Jakub T. Jankiewicz',
   2: 'John Doe',

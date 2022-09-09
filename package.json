@@ -1,9 +1,9 @@
 {
   "name": "@jcubic/wayne",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Service Worker Routing",
   "type": "module",
-  "main": "index.js",
+  "main": "index.min.js",
   "scripts": {},
   "keywords": [
     "service-worker",
