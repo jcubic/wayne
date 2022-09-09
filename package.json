@@ -4,9 +4,25 @@
   "description": "Service Worker Routing",
   "type": "module",
   "main": "index.js",
-  "scripts": {
-  },
-  "keywords": ["service-worker", "server", "http", "fake", "artifical", "http-server"],
+  "scripts": {},
+  "keywords": [
+    "service-worker",
+    "server",
+    "http",
+    "fake",
+    "mock",
+    "artifical",
+    "http-server"
+  ],
   "author": "Jakub T. Jankiewicz <jcubic@onet.pl> (https://jcubic.pl/me/)",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.19.0",
+    "@babel/preset-env": "^7.19.0",
+    "babelify": "^10.0.0",
+    "browser-resolve": "^2.0.0",
+    "browserify": "^17.0.0",
+    "esmify": "^2.1.1",
+    "uglify-js": "^3.17.0"
+  }
 }
