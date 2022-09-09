@@ -192,8 +192,7 @@ Additional methods:
 
 ## Story
 
-The idea of using a Service worker to serve pure in browser HTTP requests has a long history.
-I first described the usage of this technique in the article from 2018: [How to create Web Server in Browser](https://jcubic.wordpress.com/2018/05/23/how-to-create-web-server-from-browser/). In June 2022, I came up with a cool new way of using this technique. While creating PoC for the article I'm going to write (will update this story when ready), I realized that I can extract all the logic of creating those fake HTTP requests into a library. This is how Wayne was born.
+The idea of using a Service worker to serve pure in browser HTTP requests has a long history. I've first used this technque for my [Git Web Terminal](https://git-terminal.js.org/) and described the usage of it in the article from 2018: [How to create Web Server in Browser](https://jcubic.wordpress.com/2018/05/23/how-to-create-web-server-from-browser/). In June 2022, I came up with a cool new way of using this technique. While creating PoC for the article I'm going to write (will update this story when ready), I realized that I can extract all the logic of creating those fake HTTP requests into a library. This is how Wayne was born.
 
 The name of the library was inspired by the scene in Wayne's World 2 in which Wayne dresses up as a construction worker.
 
