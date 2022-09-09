@@ -3,3 +3,4 @@ assets
 .github
 Makefile
 CHANGELOG.md
+.gitattributes
