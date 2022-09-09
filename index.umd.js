@@ -68,7 +68,11 @@ class HTTPResponse {
       code = 302;
     }
 
-    this._resolve(Response.redirect(root_url + url, code));
+    if (!url.match(/https?:\/\//)) {
+      url = root_url + url;
+    }
+
+    this._resolve(Response.redirect(url, code));
   }
 
 } // code extracted from https://github.com/jcubic/route.js
