@@ -1,4 +1,4 @@
-importScripts('https://cdn.jsdelivr.net/gh/jcubic/wayne@master/index.umd.min.js');
+importScripts('https://cdn.jsdelivr.net/gh/jcubic/wayne@master/index.umd.js');
 
 const app = new wayne.Wayne();
 
@@ -19,4 +19,12 @@ app.get('/user/{id}', function(req, res) {
 
 app.get('/error', function(req, res) {
   nonExisting();
+});
+
+app.get('/redirect', function(req, res) {
+  res.redirect(301, '/message');
+});
+
+app.get('/message', function(req, res) {
+  res.text('Lorem Ipsum');
 });

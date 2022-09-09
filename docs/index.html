@@ -20,46 +20,51 @@
   <option value="3">3</option>
 </select>
 <button id="error" disabled>error</button>
-  
+<button id="redirect" disabled>redirect</button>
+
 <pre id="output">Loading Service Worker</pre>
 <script>
-if ('serviceWorker' in navigator) {
-    const scope = location.pathname.replace(/\/[^\/]+$/, '/');
-    navigator.serviceWorker.register('sw.js', {scope})
-             .then(function(reg) {
-                 reg.addEventListener('updatefound', function() {
-                     const installingWorker = reg.installing;
-                     console.log('A new service worker is being installed:',
-                                 installingWorker);
-                 });
-                 // registration worked
-                 console.log('Registration succeeded. Scope is ' + reg.scope);
-                 input.disabled = false;
-                 error.disabled = false;
-                 set('Ready');
-             }).catch(function(error) {
-                 // registration failed
-                 console.log('Registration failed with ' + error);
-             });
-}
+ if ('serviceWorker' in navigator) {
+     var scope = location.pathname.replace(/\/[^\/]+$/, '/');
+     navigator.serviceWorker.register('sw.js', {scope})
+              .then(function(reg) {
+                  reg.addEventListener('updatefound', function() {
+                      var installingWorker = reg.installing;
+                      console.log('A new service worker is being installed:',
+                                  installingWorker);
+                  });
+                  // registration worked
+                  console.log('Registration succeeded. Scope is ' + reg.scope);
+                  input.disabled = false;
+                  error.disabled = false;
+                  redirect.disabled = false;
+                  set('Ready');
+              }).catch(function(error) {
+                  // registration failed
+                  console.log('Registration failed with ' + error);
+              });
+ }
 
-function get(url) {
-    fetch(url)
-      .then(res => res.text())
-      .then(set);
-}
+ function get(url) {
+     fetch(url)
+         .then(res => res.text())
+         .then(set);
+ }
 
-function set(text) {
-    output.innerHTML = text
-}
+ function set(text) {
+     output.innerHTML = text;
+ }
 
-input.addEventListener('click', () => {
-    get(`./user/${user_id.value}`);
-});
+ input.addEventListener('click', () => {
+     get(`./user/${user_id.value}`);
+ });
 
-error.addEventListener('click', () => {
-    get(`./error`);
-});
+ error.addEventListener('click', () => {
+     get(`./error`);
+ });
+ redirect.addEventListener('click', () => {
+     get('./redirect');
+ });
 </script>
 </body>
 </html>
