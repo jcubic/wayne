@@ -1,2 +1,5 @@
 docs
 assets
+.github
+Makefile
+CHANGELOG.md
