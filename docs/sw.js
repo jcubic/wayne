@@ -1,6 +1,6 @@
-import { Wayne } from 'https://cdn.jsdelivr.net/gh/jcubic/wayne@master/index.js';
+importScripts('https://cdn.jsdelivr.net/gh/jcubic/wayne@master/index.umd.min.js');
 
-const app = new Wayne();
+const app = new wayne.Wayne();
 
 const users = {
   1: 'Jakub T. Jankiewicz',

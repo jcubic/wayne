@@ -25,7 +25,7 @@
 <script>
 if ('serviceWorker' in navigator) {
     const scope = location.pathname.replace(/\/[^\/]+$/, '/');
-    navigator.serviceWorker.register('sw.js', {scope, type: 'module'})
+    navigator.serviceWorker.register('sw.js', {scope})
              .then(function(reg) {
                  reg.addEventListener('updatefound', function() {
                      const installingWorker = reg.installing;
