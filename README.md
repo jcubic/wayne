@@ -127,6 +127,19 @@ app.get('/user/{id}', function(req, res) {
 app.get('/error', function(req, res) {
   nonExisting();
 });
+
+app.get('/redirect', function(req, res) {
+  res.redirect(301, '/message');
+});
+
+app.get('/message', function(req, res) {
+  res.text('Lorem Ipsum');
+});
+
+app.get('/external', function(req, res) {
+  // lorem ipsum API
+  res.redirect('https://api.buildable.dev/@62d55492951509001abc363e/live/lorem-ipsum');
+});
 ```
 
 ## Demo
@@ -166,12 +179,16 @@ Here are few most important Request properties:
 * `text()`
 * `send()`
 
+
 each of those methods accepts string as first argument. Second argument are options:
 
 * `headers` - any headers as key value pairs or you can pass [Headers object](https://developer.mozilla.org/en-US/docs/Web/API/Headers).
 * `statusText` - The status message associated with the status code, e.g., OK.
 * `status` - The status code for the response, e.g., 200.
 * `type` - Content-Type of the response (MIME).
+
+Additional methods:
+* `redirect()` - accept url or optional first argument that is number of HTTP code
 
 ## Story
 
