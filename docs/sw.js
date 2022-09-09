@@ -1,4 +1,4 @@
-importScripts('https://cdn.jsdelivr.net/gh/jcubic/wayne@master/index.umd.js');
+importScripts('https://cdn.jsdelivr.net/gh/jcubic/wayne/index.umd.js');
 
 const app = new wayne.Wayne();
 
@@ -27,4 +27,8 @@ app.get('/redirect', function(req, res) {
 
 app.get('/message', function(req, res) {
   res.text('Lorem Ipsum');
+});
+
+app.get('/external', function(req, res) {
+  res.redirect('https://api.buildable.dev/@62d55492951509001abc363e/live/lorem-ipsum');
 });

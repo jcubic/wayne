@@ -8,9 +8,12 @@
     <!--[if IE]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <script>
-    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+     pre {
+         white-space: pre-wrap;
+     }
+    </style>
 </head>
 <body>
 <button id="input" disabled>send</button>
@@ -21,6 +24,7 @@
 </select>
 <button id="error" disabled>error</button>
 <button id="redirect" disabled>redirect</button>
+<button id="external_redirect" disabled>external redirect</button>
 
 <pre id="output">Loading Service Worker</pre>
 <script>
@@ -38,6 +42,7 @@
                   input.disabled = false;
                   error.disabled = false;
                   redirect.disabled = false;
+                  external_redirect.disabled = false;
                   set('Ready');
               }).catch(function(error) {
                   // registration failed
@@ -62,8 +67,13 @@
  error.addEventListener('click', () => {
      get(`./error`);
  });
+
  redirect.addEventListener('click', () => {
      get('./redirect');
+ });
+
+ external_redirect.addEventListener('click', () => {
+     get('./external');
  });
 </script>
 </body>
