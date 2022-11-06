@@ -48,6 +48,40 @@ export class HTTPResponse {
     }
     this._resolve(Response.redirect(url, code));
   }
+  sse({ onClose } = {}) {
+    let send, close, stream, defunct;
+    stream = new ReadableStream({
+      cancel() {
+        defunct = true;
+        trigger(onClose);
+      },
+      start: controller => {
+        send = function(event) {
+          if (!defunct) {
+            const chunk = createChunk(event);
+            const payload = Uint8Array.from(chunk, x => x.charCodeAt(0));
+            controller.enqueue(payload);
+          }
+        };
+        close = function close() {
+          controller.close();
+          stream = null;
+          trigger(onClose);
+        };
+      }
+    });
+    this._resolve(new Response(stream, {
+      headers: {
+        'content-type': 'text/event-stream; charset=utf-8',
+        'Transfer-Encoding': 'chunked',
+        'Connection': 'keep-alive',
+      }
+    }));
+    return {
+      send,
+      close
+    };
+  }
 }
 
 // code extracted from https://github.com/jcubic/route.js
@@ -149,6 +183,19 @@ function error404(path) {
   }];
 }
 
+function createChunk({ data, event, retry, id }) {
+  return Object.entries({ event, id, data, retry })
+    .filter(([, value]) => value)
+    .map(([key, value]) => `${key}: ${value}`)
+    .join('\n') + '\n\n';
+}
+
+function trigger(maybeFn, ...args) {
+  if (typeof maybeFn === 'function') {
+    maybeFn(...args);
+  }
+}
+
 export class Wayne {
   constructor() {
     this._routes = {};
@@ -185,6 +232,9 @@ export class Wayne {
     ['GET', 'POST', 'DELETE', 'PATCH', 'PUT'].forEach(method => {
       this[method.toLowerCase()] = this.method(method);
     });
+  }
+  see() {
+    
   }
   method(method) {
     return function(url, fn) {
