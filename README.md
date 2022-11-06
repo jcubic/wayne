@@ -3,7 +3,7 @@
        alt="Logo of Wayne library - it represent constrution worker helmet and text with the name of the library" />
 </h1>
 
-[![npm](https://img.shields.io/badge/npm-0.2.1-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
+[![npm](https://img.shields.io/badge/npm-0.3.0-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
 
 [Service Worker Routing library for in browser HTTP requests](https://github.com/jcubic/wayne/)
@@ -210,6 +210,7 @@ Code contributions are also welcome.
 ## Aknowledge
 * Part of the content of this README was based on text from [MDN](https://developer.mozilla.org/).
 * Logo use illustration from [OpenClipart](https://openclipart.org/detail/320906/hard-hat).
+* This article was helpful [SSEGWSW: Server-Sent Events Gateway by Service Workers](https://medium.com/its-tinkoff/ssegwsw-server-sent-events-gateway-by-service-workers-6212c1c55184)
 
 ## License
 

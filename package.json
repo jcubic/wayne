@@ -1,6 +1,6 @@
 {
   "name": "@jcubic/wayne",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Service Worker Routing",
   "type": "module",
   "main": "index.min.js",
@@ -12,7 +12,9 @@
     "fake",
     "mock",
     "artifical",
-    "http-server"
+    "http-server",
+    "request",
+    "server-sent-events"
   ],
   "author": "Jakub T. Jankiewicz <jcubic@onet.pl> (https://jcubic.pl/me/)",
   "license": "MIT",
