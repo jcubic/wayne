@@ -32,3 +32,15 @@ app.get('/message', function(req, res) {
 app.get('/external', function(req, res) {
   res.redirect('https://api.buildable.dev/@62d55492951509001abc363e/live/lorem-ipsum');
 });
+
+app.get('/sse', function(req, res) {
+  const stream = res.sse({
+    onClose() {
+      clearInterval(timerId);
+    }
+  });
+  var timerId = setInterval(function() {
+    const now = (new Date()).toString();
+    stream.send({ data: now });
+  }, 1000);
+});

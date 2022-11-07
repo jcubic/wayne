@@ -25,6 +25,14 @@
 <button id="error" disabled>error</button>
 <button id="redirect" disabled>redirect</button>
 <button id="external_redirect" disabled>external redirect</button>
+<br/>
+<br/>
+<div>
+  <strong>SSE (Server Sent Events) stream</strong>
+  <br/>
+  <button id="sse_start">Start</button>
+  <button id="sse_stop">Stop</button>
+</div>
 
 <pre id="output">Loading Service Worker</pre>
 <script>
@@ -60,6 +68,14 @@
      output.innerHTML = text;
  }
 
+ function clear() {
+     output.innerHTML = '';
+ }
+
+ function log(text) {
+     output.innerHTML += text + '\n';
+ }
+
  input.addEventListener('click', () => {
      get(`./user/${user_id.value}`);
  });
@@ -74,6 +90,23 @@
 
  external_redirect.addEventListener('click', () => {
      get('./external');
+ });
+
+ let see_source;
+
+ sse_start.addEventListener('click', () => {
+     see_source = new EventSource("./sse");
+     clear();
+     see_source.onmessage = event => {
+         log(event.data);
+     };
+ });
+
+ sse_stop.addEventListener('click', () => {
+     if (see_source) {
+         see_source.close();
+         see_source = null;
+     }
  });
 </script>
 </body>
