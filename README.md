@@ -3,7 +3,7 @@
        alt="Logo of Wayne library - it represent constrution worker helmet and text with the name of the library" />
 </h1>
 
-[![npm](https://img.shields.io/badge/npm-0.3.0-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
+[![npm](https://img.shields.io/badge/npm-0.4.0-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
 
 [Service Worker Routing library for in browser HTTP requests](https://github.com/jcubic/wayne/)
@@ -92,7 +92,7 @@ Importing Wayne module:
 
 * when worker created as ES Module
 
-```javascript 
+```javascript
 import { Wayne } from 'https://cdn.jsdelivr.net/npm/@jcubic/wayne';
 
 const app = new Wayne();
