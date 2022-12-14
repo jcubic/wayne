@@ -127,15 +127,20 @@ function RouteParser() {
   const self = this;
   const open_tag = '{';
   const close_tag = '}';
+  const glob = '*';
 
   self.route_parser = function (open, close) {
     const routes = {};
-    const tag_re = new RegExp('(' + escape_re(open) + name_re + escape_re(close) + ')', 'g');
+    const tag_re = new RegExp('(' + escape_re(open) + name_re + escape_re(close) + '|' + escape_re(glob) + ')', 'g');
     const clear_re = new RegExp(escape_re(open) + '(' + name_re + ')' + escape_re(close), 'g');
     return function (str) {
       const result = [];
+      let index = 0;
       str = str.split(tag_re).map(function (chunk) {
-        if (chunk.match(tag_re)) {
+        if (chunk === glob) {
+          result.push(index++);
+          return '(.*?)';
+        } else if (chunk.match(tag_re)) {
           result.push(chunk.replace(clear_re, '$1'));
           return '([^\\/]+)';
         } else {

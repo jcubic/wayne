@@ -20,3 +20,8 @@ app.get('/user/{id}', function(req, res) {
 app.get('/error', function(req, res) {
   nonExisting();
 });
+
+app.get('/__fs__/*/name/*', function(req, res) {
+  res.text(req.params[0] + ' ' + req.params[1]);
+});
+

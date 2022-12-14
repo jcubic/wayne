@@ -1,3 +1,7 @@
+## 0.4.0
+### Features
+* add path with globs [#16](https://github.com/jcubic/wayne/issues/16)
+
 ## 0.3.0
 ### Features
 * add `sse()` method for Server-Sent Events [#12](https://github.com/jcubic/wayne/issues/12)
