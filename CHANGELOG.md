@@ -1,3 +1,7 @@
+## 0.5.0
+### Features
+* add error handler support [#10](https://github.com/jcubic/wayne/issues/10)
+
 ## 0.4.0
 ### Features
 * add path with globs [#16](https://github.com/jcubic/wayne/issues/16)
