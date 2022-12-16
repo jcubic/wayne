@@ -50,7 +50,7 @@ app.get('/__fs__/*/name/*', function(req, res) {
 });
 
 app.get('/download', async function(req, res) {
-  const text = await fetch('http://localhost/~kuba/jcubic/wayne/repo/docs/hacker.txt')
+  const text = await fetch('./hacker.txt')
         .then(res => res.text());
   const headers = {
     'Content-Disposition': 'attachment; filename="hacker.txt"'
