@@ -44,3 +44,23 @@ app.get('/sse', function(req, res) {
     stream.send({ data: now });
   }, 1000);
 });
+
+app.get('/__fs__/*/name/*', function(req, res) {
+  res.text(req.params[0] + ' ' + req.params[1]);
+});
+
+app.get('/download', async function(req, res) {
+  const text = await fetch('http://localhost/~kuba/jcubic/wayne/repo/docs/hacker.txt')
+        .then(res => res.text());
+  const headers = {
+    'Content-Disposition': 'attachment; filename="hacker.txt"'
+  };
+  res.text(text, { headers });
+});
+
+if (app.use) {
+  app.use((err, req, res, next) => {
+    const sep = '-'.repeat(80);
+    res.text([sep, ':: Wayne', sep, `Error: ${err.message}`, err.stack].join('\n'));
+  });
+}

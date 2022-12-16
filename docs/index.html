@@ -25,6 +25,8 @@
 <button id="error" disabled>error</button>
 <button id="redirect" disabled>redirect</button>
 <button id="external_redirect" disabled>external redirect</button>
+<button id="glob">glob</button>
+<a href="./download" target="_blank">download</a>
 <br/>
 <br/>
 <div>
@@ -107,6 +109,9 @@
          see_source.close();
          see_source = null;
      }
+ });
+ glob.addEventListener('click', () => {
+    get(`./__fs__/hello/world/name/this/is/fine`);
  });
 </script>
 </body>
