@@ -202,14 +202,38 @@ function trigger(maybeFn, ...args) {
   }
 }
 
+function chain_handlers(handlers, callback, err_handler) {
+  if (handlers.length) {
+    let i = 0;
+    (function recur() {
+      const handler = handlers[i];
+      if (handler) {
+        try {
+          callback(handler, function next() {
+            i++
+            recur();
+          });
+        } catch(error) {
+          if (!err_handler) {
+            throw error;
+          }
+          err_handler(error);
+        }
+      }
+    })();
+  }
+}
+
 export class Wayne {
   constructor() {
+    this._er_handlers = [];
+    this._middlewares = [];
     this._routes = {};
     this._parser = new RouteParser();
     self.addEventListener('fetch', (event) => {
       event.respondWith(new Promise((resolve, reject) => {
+        const req = event.request;
         try {
-          const req = event.request;
           const method = req.method;
           const url = new URL(req.url);
           const path = normalize_url(url.pathname);
@@ -218,10 +242,17 @@ export class Wayne {
             const match = this._parser.pick(routes, path);
             if (match.length) {
               const [first_match] = match;
-              const fn = routes[first_match.pattern];
+              const fns = routes[first_match.pattern];
               req.params = first_match.data;
               const res = new HTTPResponse(resolve);
-              return fn(event.request, res);
+              chain_handlers(fns, (fn, next) => {
+                const result = fn(req, res, next);
+                if (result && typeof result.then === 'function') {
+                  result.catch(error => {
+                    this._handle_error(resolve, req, error);
+                  });
+                }
+              });
             }
           }
           if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') {
@@ -229,9 +260,8 @@ export class Wayne {
           }
           //request = credentials: 'include'
           fetch(event.request).then(resolve).catch(reject);
-        } catch(e) {
-          const res = new HTTPResponse(resolve);
-          res.html(...error500(e));
+        } catch(error) {
+          this._handle_error(resolve, req, error);
         }
       }));
     });
@@ -239,12 +269,39 @@ export class Wayne {
       this[method.toLowerCase()] = this.method(method);
     });
   }
+  _handle_error(resolve, req, error) {
+    const res = new HTTPResponse(resolve);
+    if (this._er_handlers.length) {
+      chain_handlers(this._er_handlers, function(handler, next) {
+        handler(error, req, res, next);
+      }, function(error) {
+        res.html(...error500(error));
+      });
+    } else {
+      res.html(...error500(error));
+    }
+  }
+  use(...fns) {
+    fns.forEach(fn => {
+      if (typeof fn === 'function') {
+        if (fn.length === 4) {
+          this._er_handlers.push(fn);
+        } else if (fn.length === 3) {
+          this._middlewares.push(fn);
+        }
+      }
+    });
+  }
   method(method) {
     return function(url, fn) {
       if (!this._routes[method]) {
         this._routes[method] = {};
       }
-      this._routes[method][url] = fn;
+      const routes = this._routes[method];
+      if (!routes[url]) {
+        routes[url] = [];
+      }
+      routes[url].push(fn);
       return this;
     };
   }

@@ -20,12 +20,13 @@
   <option value="3">3</option>
 </select>
 <button id="error">error</button>
-  
+<button id="glob">glob</button>
+<a href="./download" target="_blank">download</a>
 <pre id="output"></pre>
 <script>
 if ('serviceWorker' in navigator) {
     var scope = location.pathname.replace(/\/[^\/]+$/, '/');
-    navigator.serviceWorker.register('sw.js', {scope, type: 'module'})
+    navigator.serviceWorker.register('sw.js', { scope })
              .then(function(reg) {
                  reg.addEventListener('updatefound', function() {
                      var installingWorker = reg.installing;
@@ -52,6 +53,10 @@ input.addEventListener('click', () => {
 
 error.addEventListener('click', () => {
     get(`./error`);
+});
+
+glob.addEventListener('click', () => {
+    get(`./__fs__/hello/world/name/this/is/fine`);
 });
 </script>
 </body>

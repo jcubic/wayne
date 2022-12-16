@@ -172,7 +172,7 @@ Here are few most important Request properties:
 * `json()` - Returns a promise that resolves with the result of parsing the request body as [JSON](https://developer.mozilla.org/en-US/docs/Web/API/Request/json).
 * `text()` - Returns a promise that resolves with a text representation of the request body.
 
-**Response** object is instance of HTTPResponse that have methods:
+**Response** object is instance of `HTTPResponse` those have methods:
 
 * `html()`
 * `json()`
