@@ -207,6 +207,9 @@ Code contributions are also welcome.
 
 **Working on your first Pull Request?** You can learn how from this *free* series [How to Contribute to an Open Source Project on GitHub](https://kcd.im/pull-request)
 
+## Article about Wayne
+* [Comparing Wayne.js with Express.js for service worker routing](https://blog.logrocket.com/comparing-wayne-js-express-js-service-worker-routing/)
+
 ## Aknowledge
 * Part of the content of this README was based on text from [MDN](https://developer.mozilla.org/).
 * Logo use illustration from [OpenClipart](https://openclipart.org/detail/320906/hard-hat).
