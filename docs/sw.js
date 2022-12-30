@@ -64,3 +64,20 @@ if (app.use) {
     res.text([sep, ':: Wayne', sep, `Error: ${err.message}`, err.stack].join('\n'));
   });
 }
+
+if (app._timeout) {
+  let id = 0;
+  const channel = new BroadcastChannel('rpc');
+
+  app.get('/rpc', function(req, res) {
+    const current_id = ++id;
+    const payload = { id: current_id, method: 'ping', args: [] };
+    channel.addEventListener('message', function handler(message) {
+      if (current_id == message.data.id) {
+        res.text(message.data.result);
+        channel.removeEventListener('message', handler);
+      }
+    });
+    channel.postMessage(payload);
+  });
+}
