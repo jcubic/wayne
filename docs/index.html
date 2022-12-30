@@ -118,25 +118,39 @@
     get(`./__fs__/hello/world/name/this/is/fine`);
  });
 
+ let index = 0;
+ const requests = [
+     './rpc/ping/',
+     './rpc/json/',
+     './rpc/random/',
+     './rpc/sin/10'
+ ];
+
  rpc.addEventListener('click', () => {
-     get('./rpc');
+     const next_index = index++ % requests.length;
+     get(requests[next_index]);
  });
 
  const channel = new BroadcastChannel('rpc');
  const methods = {
      ping: function() {
-         console.log('ping');
          return 'pong';
      },
      sin: function(x) {
          return Math.sin(x);
+     },
+     random: function() {
+         return Math.random();
+     },
+     json: function() {
+         return fetch('https://api.npoint.io/8c7cc24b3fd405b775ce').then(res => res.json());
      }
  };
- channel.addEventListener('message', function handler(message) {
+ channel.addEventListener('message', async function handler(message) {
      if (Object.keys(message.data).includes('method', 'id', 'args')) {
          const { method, id, args } = message.data;
          try {
-             const result = methods[method](...args);
+             const result = await methods[method](...args);
              channel.postMessage({id, result});
          } catch(error) {
              channel.postMessage({id, error});
