@@ -1,3 +1,7 @@
+## 0.5.1
+### Bugs
+* fix 404 error on async code from a route [#19](https://github.com/jcubic/wayne/issues/19)
+
 ## 0.5.0
 ### Features
 * add error handler support [#10](https://github.com/jcubic/wayne/issues/10)

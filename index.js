@@ -32,11 +32,14 @@ export class HTTPResponse {
   json(data, init) {
     this.send(JSON.stringify(data), { type: 'application/json', ...init });
   }
+  blob(blob, { type = 'text/plain', ...init } = {}) {
+    this._resolve(new Response(blob, init));
+  }
   send(data, { type = 'text/plain', ...init } = {}) {
     const blob = new Blob([data], {
       type
     });
-    this._resolve(new Response(blob, init));
+    this.blob(blob, init);
   }
   redirect(code, url) {
     if (url === undefined) {
@@ -229,6 +232,7 @@ export class Wayne {
     this._er_handlers = [];
     this._middlewares = [];
     this._routes = {};
+    this._timeout = 5 * 60 * 1000; // 5 minutes
     this._parser = new RouteParser();
     self.addEventListener('fetch', (event) => {
       event.respondWith(new Promise((resolve, reject) => {
@@ -253,6 +257,10 @@ export class Wayne {
                   });
                 }
               });
+              setTimeout(function() {
+                reject('Timeout Error');
+              }, this._timeout);
+              return;
             }
           }
           if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') {

@@ -51,6 +51,13 @@ class HTTPResponse {
     });
   }
 
+  blob(blob, {
+    type = 'text/plain',
+    ...init
+  } = {}) {
+    this._resolve(new Response(blob, init));
+  }
+
   send(data, {
     type = 'text/plain',
     ...init
@@ -58,8 +65,7 @@ class HTTPResponse {
     const blob = new Blob([data], {
       type
     });
-
-    this._resolve(new Response(blob, init));
+    this.blob(blob, init);
   }
 
   redirect(code, url) {
@@ -266,6 +272,8 @@ class Wayne {
     this._er_handlers = [];
     this._middlewares = [];
     this._routes = {};
+    this._timeout = 5 * 60 * 1000; // 5 minutes
+
     this._parser = new RouteParser();
     self.addEventListener('fetch', event => {
       event.respondWith(new Promise((resolve, reject) => {
@@ -294,6 +302,10 @@ class Wayne {
                   });
                 }
               });
+              setTimeout(function () {
+                reject('Timeout Error');
+              }, this._timeout);
+              return;
             }
           }
 
