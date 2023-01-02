@@ -1,0 +1,34 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Wayne ReactJS Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+ if ('serviceWorker' in navigator) {
+     var scope = location.pathname.replace(/\/[^\/]+$/, '/');
+     navigator.serviceWorker.register('sw.js', {scope})
+              .then(function(reg) {
+                  reg.addEventListener('updatefound', function() {
+                      var installingWorker = reg.installing;
+                      console.log('A new service worker is being installed:',
+                                  installingWorker);
+                  });
+                  // registration worked
+                  console.log('Registration succeeded. Scope is ' + reg.scope);
+                  fetch('./__root__').then(res => {
+                      return res.text();
+                  }).then(text => {
+                      root.innerHTML = text;
+                  });
+              }).catch(function(error) {
+                  // registration failed
+                  console.log('Registration failed with ' + error);
+              });
+    }
+  </script>
+</body>
+</html>
