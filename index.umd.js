@@ -55,11 +55,6 @@ class HTTPResponse {
     type = 'text/plain',
     ...init
   } = {}) {
-    console.log({
-      blob,
-      init
-    });
-
     this._resolve(new Response(blob, init));
   }
 

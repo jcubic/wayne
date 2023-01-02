@@ -33,7 +33,6 @@ export class HTTPResponse {
     this.send(JSON.stringify(data), { type: 'application/json', ...init });
   }
   blob(blob, { type = 'text/plain', ...init } = {}) {
-    console.log({blob, init});
     this._resolve(new Response(blob, init));
   }
   send(data, { type = 'text/plain', ...init } = {}) {
