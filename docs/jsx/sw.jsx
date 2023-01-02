@@ -63,6 +63,6 @@ app.get('/__*__', (req, res) => {
 });
 
 app.get('/source.jsx', async (req, res) => {
-    const text = await fetch('./sw.jsx').then(res => res.text());
+    const text = await fetch('../sw.jsx').then(res => res.text());
     res.text(text);
 });
