@@ -144,8 +144,10 @@ app.get('/external', function(req, res) {
 
 ## Demo
 
-See [simple demo](https://jcubic.github.io/wayne) the service worker is defined
+See [simple demo](https://jcubic.github.io/wayne/demo) the service worker is defined
 as code above.
+
+You can also look at Proof of Concept of [ReactJS application inside Service Worker](https://jcubic.github.io/wayne/jsx/public/).
 
 ## API reference
 
@@ -218,4 +220,4 @@ Code contributions are also welcome.
 ## License
 
 Released with [MIT](http://opensource.org/licenses/MIT) license<br/>
-Copyright (c) 2022 [Jakub T. Jankiewicz](https://jcubic.pl/me)
+Copyright (c) 2022-2023 [Jakub T. Jankiewicz](https://jcubic.pl/me)
