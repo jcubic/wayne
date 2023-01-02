@@ -55,6 +55,11 @@ class HTTPResponse {
     type = 'text/plain',
     ...init
   } = {}) {
+    console.log({
+      blob,
+      init
+    });
+
     this._resolve(new Response(blob, init));
   }
 
@@ -62,10 +67,13 @@ class HTTPResponse {
     type = 'text/plain',
     ...init
   } = {}) {
-    const blob = new Blob([data], {
-      type
-    });
-    this.blob(blob, init);
+    if (![undefined, null].includes(data)) {
+      data = new Blob([data], {
+        type
+      });
+    }
+
+    this.blob(data, init);
   }
 
   redirect(code, url) {

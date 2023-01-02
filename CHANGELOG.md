@@ -1,3 +1,7 @@
+## 0.6.0
+### Features
+* add support for 204 HTTP response
+
 ## 0.5.1
 ### Bugs
 * fix 404 error on async code from a route [#19](https://github.com/jcubic/wayne/issues/19)

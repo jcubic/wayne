@@ -33,13 +33,16 @@ export class HTTPResponse {
     this.send(JSON.stringify(data), { type: 'application/json', ...init });
   }
   blob(blob, { type = 'text/plain', ...init } = {}) {
+    console.log({blob, init});
     this._resolve(new Response(blob, init));
   }
   send(data, { type = 'text/plain', ...init } = {}) {
-    const blob = new Blob([data], {
-      type
-    });
-    this.blob(blob, init);
+    if (![undefined, null].includes(data)) {
+      data = new Blob([data], {
+        type
+      });
+    }
+    this.blob(data, init);
   }
   redirect(code, url) {
     if (url === undefined) {
