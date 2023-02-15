@@ -144,8 +144,7 @@ app.get('/external', function(req, res) {
 
 ## Demo
 
-See [simple demo](https://jcubic.github.io/wayne/demo) the service worker is defined
-as code above.
+See [simple demo](https://jcubic.github.io/wayne/demo). Check the source code of the page for details.
 
 You can also look at Proof of Concept of [ReactJS application inside Service Worker](https://jcubic.github.io/wayne/jsx/public/).
 
