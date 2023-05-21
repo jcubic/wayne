@@ -208,8 +208,14 @@ Code contributions are also welcome.
 
 **Working on your first Pull Request?** You can learn how from this *free* series [How to Contribute to an Open Source Project on GitHub](https://kcd.im/pull-request)
 
-## Article about Wayne
+## Article about or mention Wayne
 * [Comparing Wayne.js with Express.js for service worker routing](https://blog.logrocket.com/comparing-wayne-js-express-js-service-worker-routing/)
+* [Hack to Run React Application inside Service Worker](https://dev.to/jcubic/hack-to-run-react-application-inside-service-worker-4p2f)
+* [How to create Web Server in Browser](https://itnext.io/how-to-create-web-server-in-browser-ffaa371d2b53)
+
+## Press
+* [Architecture Weekly](https://github.com/oskardudycz/ArchitectureWeekly)
+* [JavaScript Weekly](https://javascriptweekly.com/issues/597)
 
 ## Aknowledge
 * Part of the content of this README was based on text from [MDN](https://developer.mozilla.org/).
