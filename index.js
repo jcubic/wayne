@@ -1,7 +1,7 @@
 /*
  * Wayne - Server Worker Routing library
  *
- * Copyright (c) 2022 Jakub T. Jankiewicz <https://jcubic.pl/me>
+ * Copyright (c) 2022-2023 Jakub T. Jankiewicz <https://jcubic.pl/me>
  * Released under MIT license
  */
 
@@ -17,6 +17,28 @@ function escape_re(str) {
     var special = /([\^\$\[\]\(\)\{\}\+\*\.\|])/g;
     return str.replace(special, '\\$1');
   }
+}
+
+function is_function(arg) {
+  return typeof arg === 'function';
+}
+
+function is_promise(arg) {
+  return arg && typeof arg === 'object' && is_function(arg.then);
+}
+
+// taken from Isomorphic-git MIT license
+function isPromiseFs(fs) {
+  const test = targetFs => {
+    try {
+      // If readFile returns a promise then we can probably assume the other
+      // commands do as well
+      return targetFs.readFile().catch(e => e)
+    } catch (e) {
+      return e
+    }
+  }
+  return is_promise(test(fs));
 }
 
 export class HTTPResponse {
@@ -160,35 +182,56 @@ export function RouteParser() {
   };
 }
 
-function error500(error) {
-  var output = [
+function html(content) {
+  return [
     '<!DOCTYPE html>',
     '<html>',
+    '<head>',
+    '<meta charset="UTF-8">',
+    '<title>Wayne Service Worker</title>',
+    '</head>',
     '<body>',
-    '<h1>500 Server Error</h1>',
-    '<p>Service worker give 500 error</p>',
-    `<p>${error.message || error}</p>`,
-    `<pre>${error.stack || ''}</pre>`,
+    ...content,
     '</body>',
     '</html>'
-  ];
-  return [output.join('\n'), {
+  ].join('\n');
+}
+
+function error500(error) {
+  var output = html([
+    '<h1>Wayne: 500 Server Error</h1>',
+    '<p>Service worker give 500 error</p>',
+    `<p>${error.message || error}</p>`,
+    `<pre>${error.stack || ''}</pre>`
+  ]);
+  return [output, {
     status: 500,
     statusText: '500 Server Error'
   }];
 }
 
+function dir(prefix, path, list) {
+  var output = html([
+    '<h1>Wayne</h1>',
+    `<p>Content of ${path}</p>`,
+    '<ul>',
+    ...list.map(name => {
+      return `<li><a href="${root_url}${prefix}${path}${name}">${name}</a></li>`;
+    }),
+    '</ul>'
+  ]);
+  return [output, {
+    status: 404,
+    statusText: '404 Page Not Found'
+  }];
+}
+
 function error404(path) {
-  var output = [
-    '<!DOCTYPE html>',
-    '<html>',
-    '<body>',
-    '<h1>404 File Not Found</h1>',
-    `<p>File ${path} not found`,
-    '</body>',
-    '</html>'
-  ];
-  return [output.join('\n'), {
+  var output = html([
+    '<h1>Wayne: 404 File Not Found</h1>',
+    `<p>File ${path} not found`
+  ]);
+  return [output, {
     status: 404,
     statusText: '404 Page Not Found'
   }];
@@ -207,26 +250,83 @@ function trigger(maybeFn, ...args) {
   }
 }
 
-function chain_handlers(handlers, callback, err_handler) {
-  if (handlers.length) {
-    let i = 0;
-    (function recur() {
-      const handler = handlers[i];
-      if (handler) {
+function chain_handlers(handlers, callback) {
+  return new Promise((resolve, reject) => {
+    if (handlers.length) {
+      let i = 0;
+      (async function recur() {
+        const handler = handlers[i];
+        if (!handler) {
+          return resolve();
+        }
         try {
-          callback(handler, function next() {
+          const ret = await callback(handler, function next() {
             i++
             recur();
           });
         } catch(error) {
-          if (!err_handler) {
-            throw error;
-          }
-          err_handler(error);
+          reject(error);
+        }
+      })();
+    }
+  });
+}
+
+async function list_dir({ fs, path }, path_name) {
+  const names = await fs.readdir(path_name);
+  return Promise.all(names.map(async name => {
+    const fullname = path.join(path_name, name);
+    const stat = await fs.stat(fullname);
+    if (stat.isDirectory()) {
+      return `${name}/`;
+    }
+    return name;
+  }));
+}
+
+export function FileSystem({ prefix, path, fs, mime }) {
+  if (!isPromiseFs(fs)) {
+    throw new Error('Wayne: only promise based FS accepted');
+  }
+  const parser = new RouteParser();
+  if (!prefix.startsWith('/')) {
+    prefix = `/${prefix}`;
+  }
+  return async function(req, res, next) {
+    const method = req.method;
+    const url = new URL(req.url);
+    let path_name = normalize_url(url.pathname);
+    console.log({ url, path_name, prefix });
+    if (path_name.startsWith(prefix)) {
+      if (req.method !== 'GET') {
+        return res.send('Method Not Allowed', { status: 405 });
+      }
+      path_name = path_name.substring(prefix.length);
+      if (!path_name) {
+        path_name = '/';
+      }
+      try {
+        const stat = await fs.stat(path_name);
+
+        if (stat.isFile()) {
+          const ext = path.extname(path_name);
+          const type = mime.getType(ext);
+          const data = await fs.readFile(path_name, "utf8");
+          res.send(data, { type });
+        } else if (stat.isDirectory()) {
+          res.html(...dir(prefix, path_name, await list_dir({ fs, path }, path_name)));
+        }
+      } catch(e) {
+        if (typeof stat === 'undefined') {
+          res.html(...error404(path_name));
+        } else {
+          res.html(...error500(error));
         }
       }
-    })();
-  }
+    } else {
+      next();
+    }
+  };
 }
 
 export class Wayne {
@@ -237,9 +337,13 @@ export class Wayne {
     this._timeout = 5 * 60 * 1000; // 5 minutes
     this._parser = new RouteParser();
     self.addEventListener('fetch', (event) => {
-      event.respondWith(new Promise((resolve, reject) => {
+      event.respondWith(new Promise(async (resolve, reject) => {
         const req = event.request;
         try {
+          const res = new HTTPResponse(resolve);
+          await chain_handlers(this._middlewares, function(fn, next) {
+            return fn(req, res, next);
+          });
           const method = req.method;
           const url = new URL(req.url);
           const path = normalize_url(url.pathname);
@@ -248,20 +352,14 @@ export class Wayne {
             const match = this._parser.pick(routes, path);
             if (match.length) {
               const [first_match] = match;
-              const fns = routes[first_match.pattern];
+              const fns = [...this._middlewares, ...routes[first_match.pattern]];
               req.params = first_match.data;
-              const res = new HTTPResponse(resolve);
-              chain_handlers(fns, (fn, next) => {
-                const result = fn(req, res, next);
-                if (result && typeof result.then === 'function') {
-                  result.catch(error => {
-                    this._handle_error(resolve, req, error);
-                  });
-                }
-              });
               setTimeout(function() {
                 reject('Timeout Error');
               }, this._timeout);
+              await chain_handlers(fns, (fn, next) => {
+                return fn(req, res, next);
+              });
               return;
             }
           }
