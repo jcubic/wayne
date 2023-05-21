@@ -1,8 +1,8 @@
 ## 0.6.0
 ### Features
 * add support for 204 HTTP response
-* add middlewere [#18](https://github.com/jcubic/wayne/issues/18)
-* add filesystem middlewere [#3](https://github.com/jcubic/wayne/issues/3)
+* add middleware [#18](https://github.com/jcubic/wayne/issues/18)
+* add filesystem middleware [#3](https://github.com/jcubic/wayne/issues/3)
 * make 404 and 500 error pages show Wayne in h1 tag
 
 ## 0.5.1

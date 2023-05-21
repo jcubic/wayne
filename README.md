@@ -142,7 +142,7 @@ app.get('/external', function(req, res) {
 });
 ```
 
-## File system middlewere
+## File system middleware
 
 ```javascript
 import { Wayne, FileSystem } from 'https://cdn.jsdelivr.net/npm/@jcubic/wayne';
