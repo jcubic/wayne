@@ -3,7 +3,7 @@
        alt="Logo of Wayne library - it represent constrution worker helmet and text with the name of the library" />
 </h1>
 
-[![npm](https://img.shields.io/badge/npm-0.5.1-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
+[![npm](https://img.shields.io/badge/npm-0.6.0-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
 
 [Service Worker Routing library for in browser HTTP requests](https://github.com/jcubic/wayne/)
@@ -142,6 +142,25 @@ app.get('/external', function(req, res) {
 });
 ```
 
+## File system middlewere
+
+```javascript
+import { Wayne, FileSystem } from 'https://cdn.jsdelivr.net/npm/@jcubic/wayne';
+import FS from "https://cdn.skypack.dev/@isomorphic-git/lightning-fs";
+import mime from "https://cdn.skypack.dev/mime";
+import path from "https://cdn.skypack.dev/path-browserify";
+
+const { promises: fs } = new FS("__wayne__");
+
+const app = new Wayne();
+
+app.use(FileSystem({ path, fs, mime, prefix: '__fs__' }));
+```
+
+When not using a module the code will be similar. When you access URLS with
+prefix `__fs__` like `./__fs__/foo` it will read files from indexedDB file
+system named `__wayne__`. See [Lightning-FS](https://github.com/isomorphic-git/lightning-fs) repo on details about the library.
+
 ## Demo
 
 See [simple demo](https://jcubic.github.io/wayne/demo). Check the source code of the page for details.
@@ -190,6 +209,12 @@ each of those methods accepts string as first argument. Second argument are opti
 
 Additional methods:
 * `redirect()` - accept url or optional first argument that is number of HTTP code
+
+Application also have middlewere as in Express.js
+
+* `use(function(err,  req, res, next) {})` 4 parameters it's error handler
+* `use(function(req, res, next) {})` 3 parameters it's middlewere
+
 
 ## Story
 
