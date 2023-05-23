@@ -127,9 +127,13 @@
  ];
 
  rpc.addEventListener('click', () => {
-     const next_index = index++ % requests.length;
-     get(requests[next_index]);
+     get(random_request() );
  });
+
+ function random_request() {
+     const next_index = index++ % requests.length;
+     return requests[next_index];
+ }
 
  const channel = new BroadcastChannel('rpc');
  const methods = {
