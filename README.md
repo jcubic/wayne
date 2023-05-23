@@ -161,6 +161,97 @@ When not using a module the code will be similar. When you access URLS with
 prefix `__fs__` like `./__fs__/foo` it will read files from indexedDB file
 system named `__wayne__`. See [Lightning-FS](https://github.com/isomorphic-git/lightning-fs) repo on details about the library.
 
+## RPC mechanism
+
+In Service worker you create generic route that send data to broadcastChannel:
+
+```javascript
+let id = 0;
+const channel = new BroadcastChannel('rpc');
+
+app.get('/rpc/{name}/*', function(req, res) {
+    try {
+        const current_id = ++id;
+        const args = req.params[0].split('/');
+        const payload = { id: current_id, method: req.params.name || 'ping', args };
+        channel.addEventListener('message', function handler(message) {
+            if (current_id == message.data.id) {
+                res.json(message.data.result);
+                channel.removeEventListener('message', handler);
+            }
+        });
+        channel.postMessage(payload);
+    } catch(e) {
+        res.text(e.message);
+    }
+});
+```
+
+and in the main thread you create the other side of the channel and the remote methods:
+
+```javascript
+
+const channel = new BroadcastChannel('rpc');
+
+const methods = {
+    ping: function() {
+        return 'pong';
+    },
+    sin: function(x) {
+        return Math.sin(x);
+    },
+    random: function() {
+        return Math.random();
+    },
+    json: function() {
+        return fetch('https://api.npoint.io/8c7cc24b3fd405b775ce').then(res => res.json());
+    }
+};
+
+channel.addEventListener('message', async function handler(message) {
+    if (Object.keys(message.data).includes('method', 'id', 'args')) {
+        const { method, id, args } = message.data;
+        try {
+            const result = await methods[method](...args);
+            channel.postMessage({id, result});
+        } catch(error) {
+            channel.postMessage({id, error});
+        }
+    }
+});
+```
+
+When you send request `/rpc/ping` you will get reposne from `methods.ping` function.
+
+```javascript
+fetch('./rpc/ping')
+  .then(res => res.text())
+  .then(text => {
+     console.log({ text });
+  });
+```
+
+The demo below uses random request:
+
+```javascript
+let index = 0;
+const requests = [
+    './rpc/ping/',
+    './rpc/json/',
+    './rpc/random/',
+    './rpc/sin/10'
+];
+
+rpc.addEventListener('click', () => {
+    get(random_request() );
+});
+
+function random_request() {
+    const next_index = index++ % requests.length;
+    return requests[next_index];
+}
+```
+
 ## Demo
 
 See [simple demo](https://jcubic.github.io/wayne/demo). Check the source code of the page for details.
