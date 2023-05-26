@@ -142,7 +142,7 @@ app.get('/external', function(req, res) {
 });
 ```
 
-## File system middleware
+### File system middleware
 
 ```javascript
 import { Wayne, FileSystem } from 'https://cdn.jsdelivr.net/npm/@jcubic/wayne';
@@ -161,7 +161,7 @@ When not using a module the code will be similar. When you access URLS with
 prefix `__fs__` like `./__fs__/foo` it will read files from indexedDB file
 system named `__wayne__`. See [Lightning-FS](https://github.com/isomorphic-git/lightning-fs) repo on details about the library.
 
-## RPC mechanism
+### [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call) mechanism
 
 In Service worker you create generic route that send data to broadcastChannel:
 
@@ -231,6 +231,8 @@ fetch('./rpc/ping')
   });
 ```
 
+With this setup, you can create new functions/methods that will map to HTTP requests.
+
 The demo below uses random request:
 
 ```javascript
@@ -252,11 +254,52 @@ function random_request() {
 }
 ```
 
+### Server-Sent Events
+
+[Server-Sent Events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events) is the way to stream data in the browser.
+It's native browser implementation of Long Polling. Here is example how to use SSE with Wayne:
+
+**Service Worker**
+
+```javascript
+app.get('/sse', function(req, res) {
+  const stream = res.sse({
+    onClose() {
+      clearInterval(timerId);
+    }
+  });
+  var timerId = setInterval(function() {
+    const now = (new Date()).toString();
+    stream.send({ data: now });
+  }, 1000);
+});
+```
+
+**Main tread**
+
+```javascript
+let see_source;
+
+sse_start.addEventListener('click', () => {
+    see_source = new EventSource("./sse");
+    see_source.onmessage = event => {
+        console.log(event.data);
+    };
+});
+
+sse_stop.addEventListener('click', () => {
+    if (see_source) {
+        see_source.close();
+        see_source = null;
+    }
+});
+```
+
 ## Demo
 
-See [simple demo](https://jcubic.github.io/wayne/demo). Check the source code of the page for details.
-
-You can also look at Proof of Concept of [ReactJS application inside Service Worker](https://jcubic.github.io/wayne/jsx/public/).
+* [simple demo](https://jcubic.github.io/wayne/demo). 
+* Proof of Concept of [ReactJS application inside Service Worker](https://jcubic.github.io/wayne/jsx/public/).
+* [Filesystem demo](https://jcubic.github.io/wayne/fs/).
 
 ## API reference
 
