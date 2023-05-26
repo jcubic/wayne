@@ -221,7 +221,7 @@ channel.addEventListener('message', async function handler(message) {
 });
 ```
 
-When you send request `/rpc/ping` you will get reposne from `methods.ping` function.
+When you send request `/rpc/ping` you will get response from `methods.ping` function.
 
 ```javascript
 fetch('./rpc/ping')
