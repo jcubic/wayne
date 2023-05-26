@@ -1,3 +1,7 @@
+## 0.6.1
+### Bugs
+* remove console.log on every request to FS
+
 ## 0.6.0
 ### Features
 * add support for 204 HTTP response
