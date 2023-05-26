@@ -296,7 +296,6 @@ export function FileSystem({ prefix, path, fs, mime }) {
     const method = req.method;
     const url = new URL(req.url);
     let path_name = normalize_url(url.pathname);
-    console.log({ url, path_name, prefix });
     if (path_name.startsWith(prefix)) {
       if (req.method !== 'GET') {
         return res.send('Method Not Allowed', { status: 405 });
