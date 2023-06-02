@@ -1,3 +1,8 @@
+## 0.6.2
+### Bugs
+* fix binary files in FS middleware [#26](https://github.com/jcubic/wayne/issues/26)
+* fix unicode filens in FS middleware [#27](https://github.com/jcubic/wayne/issues/27)
+
 ## 0.6.1
 ### Bugs
 * remove console.log on every request to FS
