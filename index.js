@@ -310,7 +310,7 @@ export function FileSystem({ prefix, path, fs, mime }) {
         if (stat.isFile()) {
           const ext = path.extname(path_name);
           const type = mime.getType(ext);
-          const data = await fs.readFile(path_name, "utf8");
+          const data = await fs.readFile(path_name);
           res.send(data, { type });
         } else if (stat.isDirectory()) {
           res.html(...dir(prefix, path_name, await list_dir({ fs, path }, path_name)));
