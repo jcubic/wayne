@@ -23,7 +23,24 @@ if ("serviceWorker" in navigator) {
     });
 }
 
+function is_image(path) {
+    return path.match(/(png|jpg)$/);
+}
+
+function fetch_text(url) {
+    return fetch(url).then(res => res.text());
+}
+
 async function main() {
+    function show_modal(type) {
+        $dialog.attr('class', type);
+        $dialog.get(0).showModal();
+    }
+    await fetch('./cover.png').then(res => res.arrayBuffer()).then(data => {
+       return fs.writeFile('/image.png', data);
+    });
+    await fs.writeFile('/źdźbło', 'Zażółć źdżbło');
+    await fs.writeFile('/zdzblo', 'Zażółć źdżbło');
     await fs.writeFile('/foo', 'Hello').then(async () => {
         try {
             await fs.stat('/bar');
@@ -31,6 +48,12 @@ async function main() {
             await fs.mkdir('/bar');
         }
         return fs.writeFile('/bar/baz', 'Hello World');
+    });
+    const $dialog = $('dialog');
+    const $img = $dialog.find('img');
+    const $output = $dialog.find('pre');
+    $dialog.on('click', 'button', () => {
+        $dialog.get(0).close();
     });
     $('<div/>').appendTo('body').browse({
         root: '/',
@@ -64,15 +87,21 @@ async function main() {
             return fs.unlink(name);
         },
         rename(src, dest) {
-            console.log({src, dest});
             return fs.rename(src, dest);
         },
         open(filename) {
-            fetch(`./__fs__${filename}`)
-                .then(res => res.text())
-                .then(text => {
-                    alert(text);
+            const path = `./__fs__${filename}`;
+            if (is_image(filename)) {
+                $img.attr('src', path);
+                show_modal('image');
+            } else {
+                fetch_text(path).then(text => {
+                    $output.text(text);
+                    show_modal('text');
                 });
+            }
         }
     });
 }
+
+

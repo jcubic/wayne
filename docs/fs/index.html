@@ -9,11 +9,27 @@
          width: 400px;
          height: 300px;
      }
+     dialog header {
+         text-align: right;
+         margin-bottom: 10px;
+     }
+     dialog.text img {
+         display: none;
+     }
+     dialog.image pre {
+         display: none;
+     }
     </style>
   </head>
   <body>
     <h1>Wayne + jQuery Filebrowser Demo</h1>
-    <pre id="output"></pre>
+    <dialog>
+      <header>
+        <button>×</button>
+      </header>
+      <pre id="output"></pre>
+      <img style="height:70vh"/>
+    </dialog>
     <script src="https://cdn.jsdelivr.net/npm/@isomorphic-git/lightning-fs@4.6.0/dist/lightning-fs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery.filebrowser/js/jquery.filebrowser.min.js"></script>
