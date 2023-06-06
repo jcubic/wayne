@@ -347,7 +347,6 @@ export class Wayne {
           const url = new URL(req.url);
           const path = normalize_url(url.pathname);
           const routes = this._routes[method];
-            console.log(path);
           if (routes) {
             const match = this._parser.pick(routes, path);
             if (match.length) {
@@ -414,3 +413,38 @@ export class Wayne {
     };
   }
 }
+
+export function rpc(channel, methods) {
+  channel.addEventListener('message', async function handler(message) {
+    if (Object.keys(message.data).includes('method', 'id', 'args')) {
+      const { method, id, args } = message.data;
+      try {
+        const result = await methods[method](...args);
+        channel.postMessage({id, result});
+      } catch(error) {
+        channel.postMessage({id, error});
+      }
+    }
+  });
+};
+
+let rpc_id = 0;
+
+export function send(channel, method, args) {
+  return new Promise((resolve, reject) => {
+    const id = ++rpc_id;
+    const payload = { id, method, args };
+    channel.addEventListener('message', function handler(message) {
+      if (id == message.data.id) {
+        const data = message.data;
+        channel.removeEventListener('message', handler);
+        if (data.error) {
+          reject(data.error);
+        } else {
+          resolve(message.data);
+        }
+      }
+    });
+    channel.postMessage(payload);
+  });
+};

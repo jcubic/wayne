@@ -3,7 +3,7 @@
        alt="Logo of Wayne library - it represent constrution worker helmet and text with the name of the library" />
 </h1>
 
-[![npm](https://img.shields.io/badge/npm-0.6.2-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
+[![npm](https://img.shields.io/badge/npm-0.7.0-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
 
 [Service Worker Routing library for in browser HTTP requests](https://github.com/jcubic/wayne/)
@@ -166,21 +166,16 @@ system named `__wayne__`. See [Lightning-FS](https://github.com/isomorphic-git/l
 In Service worker you create generic route that send data to broadcastChannel:
 
 ```javascript
-let id = 0;
-const channel = new BroadcastChannel('rpc');
+import { send } from 'https://cdn.jsdelivr.net/npm/@jcubic/wayne';
 
-app.get('/rpc/{name}/*', function(req, res) {
+const channel = new BroadcastChannel('__rpc__');
+
+app.get('/rpc/{name}/*', async (req, res) => {
+    const args = req.params[0].split('/');
+    const method = req.params.name;
     try {
-        const current_id = ++id;
-        const args = req.params[0].split('/');
-        const payload = { id: current_id, method: req.params.name || 'ping', args };
-        channel.addEventListener('message', function handler(message) {
-            if (current_id == message.data.id) {
-                res.json(message.data.result);
-                channel.removeEventListener('message', handler);
-            }
-        });
-        channel.postMessage(payload);
+        const data = await send(channel, method, args);
+        res.json(data);
     } catch(e) {
         res.text(e.message);
     }
@@ -190,10 +185,11 @@ app.get('/rpc/{name}/*', function(req, res) {
 and in the main thread you create the other side of the channel and the remote methods:
 
 ```javascript
+import { rpc } from 'https://cdn.jsdelivr.net/npm/@jcubic/wayne';
 
-const channel = new BroadcastChannel('rpc');
+const channel = new BroadcastChannel('__rpc__');
 
-const methods = {
+rpc(channel, {
     ping: function() {
         return 'pong';
     },
@@ -205,18 +201,6 @@ const methods = {
     },
     json: function() {
         return fetch('https://api.npoint.io/8c7cc24b3fd405b775ce').then(res => res.json());
-    }
-};
-
-channel.addEventListener('message', async function handler(message) {
-    if (Object.keys(message.data).includes('method', 'id', 'args')) {
-        const { method, id, args } = message.data;
-        try {
-            const result = await methods[method](...args);
-            channel.postMessage({id, result});
-        } catch(error) {
-            channel.postMessage({id, error});
-        }
     }
 });
 ```
@@ -333,7 +317,6 @@ Here are few most important Request properties:
 * `text()`
 * `send()`
 
-
 each of those methods accepts string as first argument. Second argument are options:
 
 * `headers` - any headers as key value pairs or you can pass [Headers object](https://developer.mozilla.org/en-US/docs/Web/API/Headers).
@@ -343,12 +326,17 @@ each of those methods accepts string as first argument. Second argument are opti
 
 Additional methods:
 * `redirect()` - accept url or optional first argument that is number of HTTP code
+* `sse([options])` - function create Server-Sent Event stream, the return object have method `send` that send new event.
 
 Application also have middlewere as in Express.js
 
 * `use(function(err,  req, res, next) {})` 4 parameters it's error handler
 * `use(function(req, res, next) {})` 3 parameters it's middlewere
 
+Additional exported functions:
+* `FileSystem({ path: string, fs: <FS Module>, prefix: string })` - function that creates a middleware for the file system. You should use FS that supports Service Worker like the one that use [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) e.g. [BrowserFS](https://github.com/jvilk/BrowserFS) or [LightingFS](https://github.com/isomorphic-git/lightning-fs).
+* `rpc(channel, object)` - function that should be used in main thread that create RPC like mechanism, first argument is instance of a broadcast channel and second is object with remote functions.
+* `send(channel, method: string, args: any[])` - function send remote procedure to main thread.
 
 ## Story
 

@@ -1,3 +1,9 @@
+## 0.7.0
+### Features
+* add abstraction over RPC mechanism (export `rpc` and `send`)
+### Bugs
+* fix infinite await when not using middlewares
+
 ## 0.6.2
 ### Bugs
 * fix binary files in FS middleware [#26](https://github.com/jcubic/wayne/issues/26)
