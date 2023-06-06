@@ -251,8 +251,8 @@ function trigger(maybeFn, ...args) {
 }
 
 function chain_handlers(handlers, callback) {
-  return new Promise((resolve, reject) => {
-    if (handlers.length) {
+  if (handlers.length) {
+    return new Promise((resolve, reject) => {
       let i = 0;
       (async function recur() {
         const handler = handlers[i];
@@ -260,7 +260,7 @@ function chain_handlers(handlers, callback) {
           return resolve();
         }
         try {
-          const ret = await callback(handler, function next() {
+          await callback(handler, function next() {
             i++
             recur();
           });
@@ -268,8 +268,8 @@ function chain_handlers(handlers, callback) {
           reject(error);
         }
       })();
-    }
-  });
+    });
+  }
 }
 
 async function list_dir({ fs, path }, path_name) {
@@ -347,6 +347,7 @@ export class Wayne {
           const url = new URL(req.url);
           const path = normalize_url(url.pathname);
           const routes = this._routes[method];
+            console.log(path);
           if (routes) {
             const match = this._parser.pick(routes, path);
             if (match.length) {
