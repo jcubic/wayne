@@ -1,3 +1,7 @@
+## 0.8.0
+### Features
+* improve the URL parser [#24](https://github.com/jcubic/wayne/issues/24)
+
 ## 0.7.0
 ### Features
 * add abstraction over RPC mechanism (export `rpc` and `send`)

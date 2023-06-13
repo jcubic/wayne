@@ -14,7 +14,7 @@ function normalize_url(url) {
 
 function escape_re(str) {
   if (typeof str == 'string') {
-    var special = /([\^\$\[\]\(\)\{\}\+\*\.\|])/g;
+    var special = /([\^\$\[\]\(\)\{\}\+\*\.\|\?])/g;
     return str.replace(special, '\\$1');
   }
 }
@@ -54,7 +54,7 @@ export class HTTPResponse {
   json(data, init) {
     this.send(JSON.stringify(data), { type: 'application/json', ...init });
   }
-  blob(blob, { type = 'text/plain', ...init } = {}) {
+  blob(blob, init = {}) {
     this._resolve(new Response(blob, init));
   }
   send(data, { type = 'text/plain', ...init } = {}) {
@@ -111,7 +111,7 @@ export class HTTPResponse {
   }
 }
 
-// code extracted from https://github.com/jcubic/route.js
+// code based on https://github.com/jcubic/route.js
 // Copyright (C) 2014-2017 Jakub T. Jankiewicz <https://jcubic.pl/me>
 export function RouteParser() {
   const name_re = '[a-zA-Z_][a-zA-Z_0-9]*';
@@ -119,19 +119,35 @@ export function RouteParser() {
   const open_tag = '{';
   const close_tag = '}';
   const glob = '*';
+  const number = '\\d';
+  const optional = '?';
+  const open_group = '(';
+  const close_group = ')';
+  const plus = '+';
+  const dot = '.';
   self.route_parser = function(open, close) {
 
     const routes = {};
-    const tag_re = new RegExp('(' + escape_re(open) + name_re +
-                              escape_re(close) +  '|' +
-                              escape_re(glob) + ')', 'g');
+    const tag_re = new RegExp('(' + escape_re(open) + name_re + escape_re(close) + ')', 'g');
+    const tokenizer_re = new RegExp(['(', escape_re(open), name_re, escape_re(close), '|',
+                                     escape_re(glob), '|', escape_re(number), '|', escape_re(dot), '|',
+                                     escape_re(optional), '|', escape_re(open_group), '|',
+                                     escape_re(close_group), '|', escape_re(plus), ')'].join(''), 'g');
     const clear_re = new RegExp(escape_re(open) + '(' + name_re + ')' +
                                 escape_re(close), 'g');
     return function(str) {
       const result = [];
       let index = 0;
-      str = str.split(tag_re).map(function(chunk) {
-        if (chunk === glob) {
+      let parentheses = 0;
+      str = str.split(tokenizer_re).map(function(chunk, i, chunks) {
+        if (chunk === open_group) {
+          parentheses++;
+        } else if (chunk === close_group) {
+          parentheses--;
+        }
+        if ([open_group, plus, close_group, optional, dot, number].includes(chunk)) {
+          return chunk;
+        } else if (chunk === glob) {
           result.push(index++);
           return '(.*?)';
         } else if (chunk.match(tag_re)) {
@@ -141,6 +157,9 @@ export function RouteParser() {
           return chunk;
         }
       }).join('');
+      if (parentheses !== 0) {
+        throw new Error(`Wayne: Unbalanced parentheses in an expression: ${str}`);
+      }
       return {re: str, names: result};
     };
   };
