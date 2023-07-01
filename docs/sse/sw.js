@@ -1,4 +1,4 @@
-import { Wayne } from 'http://localhost/~kuba/jcubic/wayne/repo/index.js';
+import { Wayne } from 'https://cdn.jsdelivr.net/npm/@jcubic/wayne';
 
 const app = new Wayne();
 let stream;
@@ -38,9 +38,7 @@ class EventEmitter {
     }
 }
 
-
 app.get('/stream', (req, res) => {
-    console.log('Attempt');
     if (!hub) {
         init();
     }
@@ -63,7 +61,6 @@ function init() {
     stream = new EventSource('https://jcubic.pl/stream.php');
     hub = new EventEmitter();
     stream.addEventListener('time', (event) => {
-        console.log('emit', event.data);
         hub.emit('data', event.data);
     });
 }
