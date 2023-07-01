@@ -281,9 +281,10 @@ sse_stop.addEventListener('click', () => {
 
 ## Demo
 
-* [simple demo](https://jcubic.github.io/wayne/demo). 
+* [All in one demo](https://jcubic.github.io/wayne/demo).
 * Proof of Concept of [ReactJS application inside Service Worker](https://jcubic.github.io/wayne/jsx/public/).
 * [Filesystem demo](https://jcubic.github.io/wayne/fs/).
+* [Server-Sent Events Proxy demo](https://jcubic.github.io/wayne/sse/).
 
 ## API reference
 
