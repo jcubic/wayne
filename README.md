@@ -281,7 +281,7 @@ sse_stop.addEventListener('click', () => {
 
 ## First load
 
-According to the spec the default behaior of service worker is to control the HTTP requests
+According to the spec the default behavior of service worker is to control the HTTP requests
 after reload of the page. To make the SW always in control use this code in your SW:
 
 ```javascript
