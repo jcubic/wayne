@@ -342,6 +342,7 @@ each of those methods accepts string as first argument. Second argument are opti
 Additional methods:
 * `redirect()` - accept url or optional first argument that is number of HTTP code
 * `sse([options])` - function create Server-Sent Event stream, the return object have method `send` that send new event.
+* `fetch(url)` - method will send normal HTTP request to the server and return the result to the client.
 
 Application also have middlewere as in Express.js
 
@@ -379,7 +380,7 @@ Code contributions are also welcome.
 * [Architecture Weekly](https://github.com/oskardudycz/ArchitectureWeekly)
 * [JavaScript Weekly](https://javascriptweekly.com/issues/597)
 
-## Aknowledge
+## Acknowledge
 * Part of the content of this README was based on text from [MDN](https://developer.mozilla.org/).
 * Logo use illustration from [OpenClipart](https://openclipart.org/detail/320906/hard-hat).
 * This article was helpful [SSEGWSW: Server-Sent Events Gateway by Service Workers](https://medium.com/its-tinkoff/ssegwsw-server-sent-events-gateway-by-service-workers-6212c1c55184)
