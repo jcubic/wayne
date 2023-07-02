@@ -4,3 +4,6 @@ assets
 Makefile
 CHANGELOG.md
 .gitattributes
+banner.js
+banner.version.js
+.[0-9]*
