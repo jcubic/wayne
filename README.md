@@ -3,7 +3,7 @@
        alt="Logo of Wayne library - it represent constrution worker helmet and text with the name of the library" />
 </h1>
 
-[![npm](https://img.shields.io/badge/npm-0.10.0-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
+[![npm](https://img.shields.io/badge/npm-0.10.1-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
 
 [Service Worker Routing library for in browser HTTP requests](https://github.com/jcubic/wayne/)
@@ -300,6 +300,7 @@ by Jake Archibald.
 * [Filesystem demo](https://jcubic.github.io/wayne/fs/).
 * [Server-Sent Events Proxy demo](https://jcubic.github.io/wayne/sse/).
 * [Offline demo](https://jcubic.github.io/wayne/offline/).
+* [Download demo](https://jcubic.github.io/wayne/download/).
 
 The source code for the demos can be found [in docs directory at gh-pages branch](https://github.com/jcubic/wayne/tree/gh-pages/docs).
 
@@ -350,8 +351,8 @@ Additional methods:
 
 Application also have middlewere as in Express.js
 
-* `use(function(err,  req, res, next) {})` 4 parameters it's error handler
-* `use(function(req, res, next) {})` 3 parameters it's middlewere
+* `use(function(err,  req, res, next) {})` 4 parameters it's an error handler
+* `use(function(req, res, next) {})` 3 parameters it's a middleware
 
 Additional exported functions:
 * `FileSystem({ path: string, fs: <FS Module>, prefix: string })` - function that creates a middleware for the file system. You should use FS that supports Service Worker like the one that use [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) e.g. [BrowserFS](https://github.com/jvilk/BrowserFS) or [LightingFS](https://github.com/isomorphic-git/lightning-fs).

@@ -1,10 +1,10 @@
-VERSION=0.10.0
+VERSION=0.10.1
 DATE=`date -uR`
 YEAR=`date +%Y`
 
 all: README.md package-lock.json index.umd.js index.umd.min.js index.min.js
 
-.$(VERSION):
+.$(VERSION): Makefile
 	touch .$(VERSION)
 
 package.json: .$(VERSION)
@@ -14,13 +14,13 @@ package-lock.json: package.json
 	npm install
 
 README.md: .$(VERSION)
-	sed -i -e "s/\(npm-\)[^-]\+\(-blue.svg\)/\1$(VERSION)\2/" -e "s/\(2022-\)[0-9]\+/\1-$(YEAR)/" README.md
+	sed -i -e "s/\(npm-\)[^-]\+\(-blue.svg\)/\1$(VERSION)\2/" -e "s/\(2022\)-[0-9]\+/\1-$(YEAR)/" README.md
 
 index.js: .$(VERSION) Makefile
-	sed -i -e "s/\(* Wayne .* (v. \)\([^)]\+\)/\1$(VERSION)/" -e "s/\(2022-\)[0-9]\+/\1-$(YEAR)/" index.js
+	sed -i -e "s/\(* Wayne .* (v. \)\([^)]\+\)/\1$(VERSION)/" -e "s/\(2022\)-[0-9]\+/\1-$(YEAR)/" index.js
 
 banner.version.js: .$(VERSION) banner.js Makefile
-	sed -e "s/{{VER}}/$(VERSION)/" -e "s/\(2022-\)[0-9]\+/\1-$(YEAR)/" -e "s/{{DATE}}/$(DATE)/" banner.js > banner.version.js
+	sed -e "s/{{VER}}/$(VERSION)/" -e "s/\(2022\)-[0-9]\+/\1-$(YEAR)/" -e "s/{{DATE}}/$(DATE)/" banner.js > banner.version.js
 
 index.umd.js: index.js Makefile
 	npx browserify -e index.js -s wayne -p esmify -o tmp.js
