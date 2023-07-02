@@ -279,6 +279,20 @@ sse_stop.addEventListener('click', () => {
 });
 ```
 
+## First load
+
+According to the spec the default behaior of service worker is to control the HTTP requests
+after reload of the page. To make the SW always in control use this code in your SW:
+
+```javascript
+self.addEventListener('activate', (event) => {
+  event.waitUntil(clients.claim());
+});
+```
+
+You can read more in article [The service worker lifecycle](https://web.dev/service-worker-lifecycle/)
+by Jake Archibald.
+
 ## Demo
 
 * [All in one demo](https://jcubic.github.io/wayne/demo).
