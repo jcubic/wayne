@@ -1,3 +1,7 @@
+## 0.9.0
+### Features
+* add `HTTPResponse::fetch` method
+
 ## 0.8.0
 ### Features
 * improve the URL parser [#24](https://github.com/jcubic/wayne/issues/24)

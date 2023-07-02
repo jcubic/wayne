@@ -3,7 +3,7 @@
        alt="Logo of Wayne library - it represent constrution worker helmet and text with the name of the library" />
 </h1>
 
-[![npm](https://img.shields.io/badge/npm-0.8.0-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
+[![npm](https://img.shields.io/badge/npm-0.9.0-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
 
 [Service Worker Routing library for in browser HTTP requests](https://github.com/jcubic/wayne/)
