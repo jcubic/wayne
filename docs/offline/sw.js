@@ -1,4 +1,4 @@
-importScripts('https://cdn.jsdelivr.net/npm/@jcubic/wayne/index.umd.min.js');
+importScripts('https://cdn.jsdelivr.net/npm/@jcubic/wayne@latest/index.umd.min.js');
 
 const app = new wayne.Wayne();
 
@@ -13,18 +13,15 @@ app.use(async (req, res, next) => {
         res.send('', 'text/plain');
     } else {
         // normal HTTP request to the server
-        const _res = await fetch(req.url);
-        const type = _res.headers.get('Content-Type') ?? 'application/octet-stream';
-        res.send(await _res.arrayBuffer(), { type });
+        res.fetch(req.url);
     }
 });
 
 app.get('*', async (req, res) => {
     if (navigator.onLine) {
-        const path = '.' + req.params[0];
-        const _res = await fetch(path);
-        const type = _res.headers.get('Content-Type') ?? 'application/octet-stream';
-        res.send(await _res.arrayBuffer(), { type });
+        // dot it used so it work when worker is in a directory
+        const path = req.params[0];
+        res.fetch('.' + path);
     } else {
         res.html(`<!DOCTYPE HTML><html><body><h1>You're offline</h1></body></html>`);
     }
