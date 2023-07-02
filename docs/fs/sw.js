@@ -17,3 +17,9 @@ app.use((err, req, res, next) => {
   const sep = '-'.repeat(80);
   res.text([sep, ':: Wayne', sep, `Error: ${err.message}`, err.stack].join('\n'));
 });
+
+// take control of uncontrolled clients on first load
+// ref: https://web.dev/service-worker-lifecycle/#clientsclaim
+self.addEventListener('activate', (event) => {
+  event.waitUntil(clients.claim());
+});

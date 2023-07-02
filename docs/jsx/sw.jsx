@@ -66,3 +66,9 @@ app.get('/source.jsx', async (req, res) => {
     const text = await fetch('../sw.jsx').then(res => res.text());
     res.text(text);
 });
+
+// take control of uncontrolled clients on first load
+// ref: https://web.dev/service-worker-lifecycle/#clientsclaim
+self.addEventListener('activate', (event) => {
+  event.waitUntil(clients.claim());
+});

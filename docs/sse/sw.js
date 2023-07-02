@@ -64,3 +64,10 @@ function init() {
         hub.emit('data', event.data);
     });
 }
+
+// take control of uncontrolled clients on first load
+// ref: https://web.dev/service-worker-lifecycle/#clientsclaim
+self.addEventListener('activate', (event) => {
+  event.waitUntil(clients.claim());
+});
+

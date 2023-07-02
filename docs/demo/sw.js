@@ -65,24 +65,28 @@ if (app.use) {
   });
 }
 
-if (app._timeout) {
-  let id = 0;
-  const channel = new BroadcastChannel('rpc');
+let id = 0;
+const channel = new BroadcastChannel('rpc');
 
-  app.get('/rpc/{name}/*', function(req, res) {
-    try {
-      const current_id = ++id;
-      const args = req.params[0].split('/');
-      const payload = { id: current_id, method: req.params.name || 'ping', args };
-      channel.addEventListener('message', function handler(message) {
-        if (current_id == message.data.id) {
-          res.json(message.data.result);
-          channel.removeEventListener('message', handler);
-        }
-      });
-      channel.postMessage(payload);
-    } catch(e) {
-      res.text(e.message);
-    }
-  });
-}
+app.get('/rpc/{name}/*', function(req, res) {
+  try {
+    const current_id = ++id;
+    const args = req.params[0].split('/');
+    const payload = { id: current_id, method: req.params.name || 'ping', args };
+    channel.addEventListener('message', function handler(message) {
+      if (current_id == message.data.id) {
+        res.json(message.data.result);
+        channel.removeEventListener('message', handler);
+      }
+    });
+    channel.postMessage(payload);
+  } catch(e) {
+    res.text(e.message);
+  }
+});
+
+// take control of uncontrolled clients on first load
+// ref: https://web.dev/service-worker-lifecycle/#clientsclaim
+self.addEventListener('activate', (event) => {
+  event.waitUntil(clients.claim());
+});
