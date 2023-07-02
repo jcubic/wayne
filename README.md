@@ -301,6 +301,8 @@ by Jake Archibald.
 * [Server-Sent Events Proxy demo](https://jcubic.github.io/wayne/sse/).
 * [Offline demo](https://jcubic.github.io/wayne/offline/).
 
+The source code for the demos can be found [in docs directory at gh-pages branch](https://github.com/jcubic/wayne/tree/gh-pages/docs).
+
 ## API reference
 
 Wayne object has those methods that correspond to HTTP methods
