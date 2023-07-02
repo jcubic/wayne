@@ -346,6 +346,7 @@ Additional methods:
 * `redirect()` - accept url or optional first argument that is number of HTTP code
 * `sse([options])` - function create Server-Sent Event stream, the return object have method `send` that send new event.
 * `fetch(url)` - method will send normal HTTP request to the server and return the result to the client.
+* `download(data, { filename })` - method that can be used to trigger of file download. The data can be a `string` or `arrayBuffer` you can use native fetch API and call `await res.text()` or `await res.arrayBuffer()` and pass the result as data.
 
 Application also have middlewere as in Express.js
 
