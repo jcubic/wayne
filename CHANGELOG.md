@@ -1,3 +1,7 @@
+## 0.10.0
+### Features
+* add  `HTTPResponse::download` method
+
 ## 0.9.0
 ### Features
 * add `HTTPResponse::fetch` method

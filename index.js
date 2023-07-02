@@ -1,7 +1,7 @@
 /*
- * Wayne - Server Worker Routing library (v. 0.9.0)
+ * Wayne - Server Worker Routing library (v. 0.10.0)
  *
- * Copyright (c) 2022-2023 Jakub T. Jankiewicz <https://jcubic.pl/me>
+ * Copyright (c) 2022--2023 Jakub T. Jankiewicz <https://jcubic.pl/me>
  * Released under MIT license
  */
 
@@ -69,6 +69,12 @@ export class HTTPResponse {
         const _res = await fetch(url);
         const type = _res.headers.get('Content-Type') ?? 'application/octet-stream';
         this.send(await _res.arrayBuffer(), { type });
+    }
+    download(content, { filename = 'download', type = 'text/plain', ...init } = {}) {
+        const headers = {
+            'Content-Disposition': `attachment; filename="${filename}"`
+        };
+        this.send(content, { type, headers, ...init });
     }
     redirect(code, url) {
         if (url === undefined) {
