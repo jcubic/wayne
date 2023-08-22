@@ -1,10 +1,10 @@
 /*
- * Wayne - Server Worker Routing library (v. 0.10.0)
+ * Wayne - Server Worker Routing library (v. 0.10.1)
  *
  * Copyright (c) 2022-2023 Jakub T. Jankiewicz <https://jcubic.pl/me>
  * Released under MIT license
  *
- * Sun, 02 Jul 2023 18:55:00 +0000
+ * Tue, 22 Aug 2023 17:34:19 +0000
  */
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.wayne = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
@@ -20,7 +20,7 @@ exports.rpc = rpc;
 exports.send = send;
 
 /*
- * Wayne - Server Worker Routing library (v. 0.10.1)
+ * Wayne - Server Worker Routing library (v. 0.11.0)
  *
  * Copyright (c) 2022-2023 Jakub T. Jankiewicz <https://jcubic.pl/me>
  * Released under MIT license
@@ -63,8 +63,9 @@ function isPromiseFs(fs) {
 }
 
 class HTTPResponse {
-  constructor(resolve) {
+  constructor(resolve, reject) {
     this._resolve = resolve;
+    this._reject = reject;
   }
 
   html(data, init) {
@@ -102,13 +103,17 @@ class HTTPResponse {
     this.blob(data, init);
   }
 
-  async fetch(url) {
-    const _res = await fetch(url);
+  async fetch(arg) {
+    if (typeof arg === 'string') {
+      const _res = await fetch(arg);
 
-    const type = _res.headers.get('Content-Type') ?? 'application/octet-stream';
-    this.send(await _res.arrayBuffer(), {
-      type
-    });
+      const type = _res.headers.get('Content-Type') ?? 'application/octet-stream';
+      this.send(await _res.arrayBuffer(), {
+        type
+      });
+    } else if (arg instanceof Request) {
+      return fetch(arg).then(this._resolve).catch(this._reject);
+    }
   }
 
   download(content, {
@@ -453,7 +458,7 @@ class Wayne {
         const req = event.request;
 
         try {
-          const res = new HTTPResponse(resolve);
+          const res = new HTTPResponse(resolve, reject);
           await chain_handlers(this._middlewares, function (fn, next) {
             return fn(req, res, next);
           });

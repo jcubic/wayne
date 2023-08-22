@@ -3,7 +3,7 @@
        alt="Logo of Wayne library - it represent constrution worker helmet and text with the name of the library" />
 </h1>
 
-[![npm](https://img.shields.io/badge/npm-0.10.1-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
+[![npm](https://img.shields.io/badge/npm-0.11.0-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
 
 [Service Worker Routing library for in browser HTTP requests](https://github.com/jcubic/wayne/)
@@ -141,6 +141,32 @@ app.get('/external', function(req, res) {
   res.redirect('https://api.buildable.dev/@62d55492951509001abc363e/live/lorem-ipsum');
 });
 ```
+
+### Handle same extension for all requests
+
+```javascript
+importScripts(
+  'https://cdn.jsdelivr.net/npm/@jcubic/wayne/index.umd.min.js',
+  'https://cdn.jsdelivr.net/gh/jcubic/static@master/js/path.js'
+);
+
+const app = new Wayne();
+
+app.get('*', function(req, res) {
+  const url = new URL(req.url);
+  const extension = path.extname(url.pathname);
+  const accept = req.headers.get('Accept');
+  if (extension === '.js' && accept.match(/text\/html/)) {
+    res.text('// Sorry no source code for you');
+  } else {
+    res.fetch(req);
+  }
+});
+```
+
+This code will show comment `// Sorry no source code for you` for every
+request to JavaScript files from the browser (if open in new tab).
+When you want to view the file the browser sends `Accept: text/html`.
 
 ### File system middleware
 
@@ -301,6 +327,7 @@ by Jake Archibald.
 * [Server-Sent Events Proxy demo](https://jcubic.github.io/wayne/sse/).
 * [Offline demo](https://jcubic.github.io/wayne/offline/).
 * [Download demo](https://jcubic.github.io/wayne/download/).
+* [Source Code Syntax highlight demo](https://jcubic.github.io/wayne/code/).
 
 The source code for the demos can be found [in docs directory at gh-pages branch](https://github.com/jcubic/wayne/tree/gh-pages/docs).
 
@@ -315,7 +342,7 @@ Wayne object has those methods that correspond to HTTP methods
 * `patch`
 
 each method accepts URL with markers inside curly brackets those markers will be available from **Request.params** object.
-Request object is browser native object of a given request see [MDN for details](https://developer.mozilla.org/en-US/docs/Web/API/Request). The only change to the native API is that the object have proeprty **params**.
+Request object is browser native object of a given request see [MDN for details](https://developer.mozilla.org/en-US/docs/Web/API/Request). The only change to the native API is that the object have property **params**.
 
 Here are few most important Request properties:
 
@@ -346,7 +373,7 @@ each of those methods accepts string as first argument. Second argument are opti
 Additional methods:
 * `redirect()` - accept url or optional first argument that is number of HTTP code
 * `sse([options])` - function create Server-Sent Event stream, the return object have method `send` that send new event.
-* `fetch(url)` - method will send normal HTTP request to the server and return the result to the client.
+* `fetch(url | Request)` - method will send normal HTTP request to the server and return the result to the client. You can use default Request object from the route.
 * `download(data, { filename })` - method that can be used to trigger of file download. The data can be a `string` or `arrayBuffer` you can use native fetch API and call `await res.text()` or `await res.arrayBuffer()` and pass the result as data.
 
 Application also have middlewere as in Express.js
@@ -361,13 +388,13 @@ Additional exported functions:
 
 ## Story
 
-The idea of using a Service worker to serve pure in browser HTTP requests has a long history. I've first used this technque for my [Git Web Terminal](https://git-terminal.js.org/) and described the usage of it in the article from 2018: [How to create Web Server in Browser](https://jcubic.wordpress.com/2018/05/23/how-to-create-web-server-from-browser/). In June 2022, I came up with a cool new way of using this technique. While creating PoC for the article I'm going to write (will update this story when ready), I realized that I can extract all the logic of creating those fake HTTP requests into a library. This is how Wayne was born.
+The idea of using a Service worker to serve pure in browser HTTP requests has a long history. I've first used this technique for my [Git Web Terminal](https://git-terminal.js.org/) and described the usage of it in the article from 2018: [How to create Web Server in Browser](https://jcubic.wordpress.com/2018/05/23/how-to-create-web-server-from-browser/). In June 2022, I came up with a cool new way of using this technique. While creating PoC for the article I'm going to write (will update this story when ready), I realized that I can extract all the logic of creating those fake HTTP requests into a library. This is how Wayne was born.
 
 The name of the library was inspired by the scene in [Wayne's World 2](https://en.wikipedia.org/wiki/Wayne's_World_2) in which Wayne dresses up as a construction worker.
 
 [![Watch the video](https://github.com/jcubic/wayne/blob/master/assets/wayne's-world-screen-capture.png?raw=true)](https://youtu.be/89W-lCTFT2o)
 
-I hightly recommend both movies if you haven't seen them already.
+I highly recommend both movies if you haven't seen them already.
 
 
 ## Contribution

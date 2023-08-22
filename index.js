@@ -1,5 +1,5 @@
 /*
- * Wayne - Server Worker Routing library (v. 0.10.1)
+ * Wayne - Server Worker Routing library (v. 0.11.0)
  *
  * Copyright (c) 2022-2023 Jakub T. Jankiewicz <https://jcubic.pl/me>
  * Released under MIT license
@@ -42,8 +42,9 @@ function isPromiseFs(fs) {
 }
 
 export class HTTPResponse {
-    constructor(resolve) {
+    constructor(resolve, reject) {
         this._resolve = resolve;
+        this._reject = reject;
     }
     html(data, init) {
         this.send(data, { type: 'text/html', ...init });
@@ -65,10 +66,14 @@ export class HTTPResponse {
         }
         this.blob(data, init);
     }
-    async fetch(url) {
-        const _res = await fetch(url);
-        const type = _res.headers.get('Content-Type') ?? 'application/octet-stream';
-        this.send(await _res.arrayBuffer(), { type });
+    async fetch(arg) {
+        if (typeof arg === 'string') {
+            const _res = await fetch(arg);
+            const type = _res.headers.get('Content-Type') ?? 'application/octet-stream';
+            this.send(await _res.arrayBuffer(), { type });
+        } else if (arg instanceof Request) {
+            return fetch(arg).then(this._resolve).catch(this._reject);
+        }
     }
     download(content, { filename = 'download', type = 'text/plain', ...init } = {}) {
         const headers = {
@@ -369,7 +374,7 @@ export class Wayne {
             event.respondWith(new Promise(async (resolve, reject) => {
                 const req = event.request;
                 try {
-                    const res = new HTTPResponse(resolve);
+                    const res = new HTTPResponse(resolve, reject);
                     await chain_handlers(this._middlewares, function(fn, next) {
                         return fn(req, res, next);
                     });
