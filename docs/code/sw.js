@@ -19,7 +19,7 @@ app.get('*', async function(req, res) {
   const language = language_map[extension];
   const accept = req.headers.get('Accept');
   if (language && Prism.languages[language] && accept.match(/text\/html/)) {
-    const code = await fetch(req.url).then(res => res.text());
+    const code = escape(await fetch(req.url).then(res => res.text()));
     const grammar = Prism.languages[language];
     const tokens = Prism.tokenize(code, grammar);
     const output = Prism.Token.stringify(tokens, language);
@@ -28,6 +28,10 @@ app.get('*', async function(req, res) {
     res.fetch(req);
   }
 });
+
+function escape(html) {
+  return html.replace(/</g, '&lt;').replace('>', '&gt;');
+}
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(clients.claim());
