@@ -19,15 +19,13 @@ app.get('*', async function(req, res) {
   const language = language_map[extension];
   const accept = req.headers.get('Accept');
   if (language && Prism.languages[language] && accept.match(/text\/html/)) {
-      const code = await fetch(req.url).then(res => res.text());
-      const grammar = Prism.languages[language];
-      const tokens = Prism.tokenize(code, grammar);
-      const output = Prism.Token.stringify(tokens, language);
-      res.html(`${style}\n<pre><code class="language-${language}">${output}</code></pre>`);
+    const code = await fetch(req.url).then(res => res.text());
+    const grammar = Prism.languages[language];
+    const tokens = Prism.tokenize(code, grammar);
+    const output = Prism.Token.stringify(tokens, language);
+    res.html(`${style}\n<pre><code class="language-${language}">${output}</code></pre>`);
   } else {
-      const fetch_res = await fetch(req.url);
-      const type = fetch_res.headers.get('Content-Type');
-      res._resolve(fetch_res);
+    res.fetch(req);
   }
 });
 
