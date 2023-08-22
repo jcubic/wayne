@@ -166,7 +166,7 @@ app.get('*', function(req, res) {
 
 This code will show comment `// Sorry no source code for you` for every
 request to JavaScript files from the browser (if open in new tab).
-When you want to view the file the browser sends `Accept: text/html`.
+When you want to view the file the browser sends `Accept: text/html` HTTP header.
 
 ### File system middleware
 
