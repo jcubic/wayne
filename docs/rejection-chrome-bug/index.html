@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <meta name="Description" content=""/>
+    <link rel="shortcut icon" href=""/>
+    <!--[if IE]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+     pre {
+         white-space: pre-wrap;
+     }
+    </style>
+</head>
+<body>
+<h1>event.respondWith Chrome bug</h1>
+<p>Please add uBlock Origin extension to block the OWA Analytics that are added a the end of this file</p>
+<p>You will see stack trace in console when fetch is rejected becasue of Error (blocked JS file)</p>
+<p>event.respondWith should handle promise rejection from fetch. This works in Firefox</p>
+<p>Found during debugging session on StackOverflow <a href="https://stackoverflow.com/q/76967564/387194">What is the use of fetch event response Promise rejection in Service Worker?</a></p>
+<script>
+ if ('serviceWorker' in navigator) {
+     const scope = location.pathname.replace(/\/[^\/]+$/, '/');
+     navigator.serviceWorker.register('sw.js', { scope })
+        .then(function(reg) {
+            reg.addEventListener('updatefound', function() {
+                var installingWorker = reg.installing;
+                console.log('A new service worker is being installed:',
+                            installingWorker);
+            });
+            // registration worked
+            console.log('Registration succeeded. Scope is ' + reg.scope);
+        }).catch(function(error) {
+            // registration failed
+            console.log('Registration failed with ' + error);
+        });
+ }
+</script>
+ <!-- Start Open Web Analytics Tracker -->
+  <script type="text/javascript">
+   //<![CDATA[
+   var owa_baseUrl = 'https://stats.jcubic.pl/';
+   var owa_cmds = owa_cmds || [];
+   owa_cmds.push(['setSiteId', 'b9a1a51b38e3837c9a5b309ec4122ff3']);
+   owa_cmds.push(['trackPageView']);
+   owa_cmds.push(['trackClicks']);
+   (function() {
+       var _owa = document.createElement('script'); _owa.type = 'text/javascript'; _owa.async = true;
+       owa_baseUrl = ('https:' == document.location.protocol ? window.owa_baseSecUrl || owa_baseUrl.replace(/http:/, 'https:') : owa_baseUrl );
+       _owa.src = owa_baseUrl + 'modules/base/js/owa.tracker-combined-min.js';
+       var _owa_s = document.getElementsByTagName('script')[0]; _owa_s.parentNode.insertBefore(_owa, _owa_s);
+   }());
+   //]]>
+  </script>
+  <!-- End Open Web Analytics Code -->
+</body>
+</html>
