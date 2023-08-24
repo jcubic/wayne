@@ -1,3 +1,11 @@
+## 0.11.2
+### Bugfix
+* don't show stack trace when request is blocked by AdBlock
+
+## 0.11.0
+### Features
+* make `HTTPResponse::fetch` accept `Request` object
+
 ## 0.10.0
 ### Features
 * add  `HTTPResponse::download` method
@@ -13,16 +21,16 @@
 ## 0.7.0
 ### Features
 * add abstraction over RPC mechanism (export `rpc` and `send`)
-### Bugs
+### Bugfix
 * fix infinite await when not using middlewares
 
 ## 0.6.2
-### Bugs
+### Bugfix
 * fix binary files in FS middleware [#26](https://github.com/jcubic/wayne/issues/26)
 * fix Unicode file names in FS middleware [#27](https://github.com/jcubic/wayne/issues/27)
 
 ## 0.6.1
-### Bugs
+### Bugfix
 * remove console.log on every request to FS
 
 ## 0.6.0
@@ -33,7 +41,7 @@
 * make 404 and 500 error pages show Wayne in h1 tag
 
 ## 0.5.1
-### Bugs
+### Bugfix
 * fix 404 error on async code from a route [#19](https://github.com/jcubic/wayne/issues/19)
 
 ## 0.5.0
@@ -49,7 +57,7 @@
 * add `sse()` method for Server-Sent Events [#12](https://github.com/jcubic/wayne/issues/12)
 
 ## 0.2.1
-### Bugs
+### Bugfix
 * fix cross-origin redirect [#2](https://github.com/jcubic/wayne/issues/2)
 
 ## 0.2.0

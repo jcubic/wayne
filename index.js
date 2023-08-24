@@ -1,5 +1,5 @@
 /*
- * Wayne - Server Worker Routing library (v. 0.11.1)
+ * Wayne - Server Worker Routing library (v. 0.11.2)
  *
  * Copyright (c) 2022-2023 Jakub T. Jankiewicz <https://jcubic.pl/me>
  * Released under MIT license
@@ -371,7 +371,7 @@ export class Wayne {
         this._timeout = 5 * 60 * 1000; // 5 minutes
         this._parser = new RouteParser();
         self.addEventListener('fetch', (event) => {
-            event.respondWith(new Promise(async (resolve, reject) => {
+            const promise = new Promise(async (resolve, reject) => {
                 const req = event.request;
                 try {
                     const res = new HTTPResponse(resolve, reject);
@@ -405,7 +405,8 @@ export class Wayne {
                 } catch(error) {
                     this._handle_error(resolve, req, error);
                 }
-            }));
+            });
+            event.respondWith(promise.catch(() => {}));
         });
         ['GET', 'POST', 'DELETE', 'PATCH', 'PUT'].forEach(method => {
             this[method.toLowerCase()] = this.method(method);
