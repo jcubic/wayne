@@ -1,16 +1,16 @@
 <h1 align="center">
   <img src="https://github.com/jcubic/wayne/blob/master/assets/wayne-logo.svg?raw=true"
-       alt="Logo of Wayne library - it represent constrution worker helmet and text with the name of the library" />
+       alt="Logo of Wayne library - it represents construction worker helmet and text with the name of the library" />
 </h1>
 
 [![npm](https://img.shields.io/badge/npm-0.11.1-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
 
-[Service Worker Routing library for in browser HTTP requests](https://github.com/jcubic/wayne/)
+[Service Worker Routing library for in-browser HTTP requests](https://github.com/jcubic/wayne/)
 
-It's like Express inside Service Worker.
+It's like an Express inside Service Worker.
 
-Most of the time Service Worker is used for caching of HTTP requests and making the app work when there is no internet (mostly for [PWA](https://en.wikipedia.org/wiki/Progressive_web_application)), but in fact you can create completely new responses to requests that never leave the browser. This library make that easier by adding simple API similar to Express.
+Most of the time Service Worker is used for caching HTTP requests and making the app work when there is no internet (mostly for [PWA](https://en.wikipedia.org/wiki/Progressive_web_application)), but in fact, you can create completely new responses to requests that never leave the browser. This library makes that easier by adding a simple API similar to Express.
 
 ## Usage
 
@@ -24,7 +24,7 @@ npm install @jcubic/wayne
 yarn add @jcubic/wayne
 ```
 
-Standard way of installing the service worker
+The standard way of installing the service worker
 
 ```javascript
 if ('serviceWorker' in navigator) {
@@ -98,7 +98,7 @@ import { Wayne } from 'https://cdn.jsdelivr.net/npm/@jcubic/wayne';
 const app = new Wayne();
 ```
 
-* When worker created as normal script
+* When the Service Worker created as normal script
 
 ```javascript
 importScripts('https://cdn.jsdelivr.net/npm/@jcubic/wayne/index.umd.min.js');
@@ -142,7 +142,7 @@ app.get('/external', function(req, res) {
 });
 ```
 
-### Handle same extension for all requests
+### Handle the same extension for all requests
 
 ```javascript
 importScripts(
@@ -164,8 +164,8 @@ app.get('*', function(req, res) {
 });
 ```
 
-This code will show comment `// Sorry no source code for you` for every
-request to JavaScript files from the browser (if open in new tab).
+This code will show the comment `// Sorry no source code for you` for every
+request to JavaScript files from the browser (if open in a new tab).
 When you want to view the file the browser sends `Accept: text/html` HTTP header.
 
 ### File system middleware
@@ -183,13 +183,13 @@ const app = new Wayne();
 app.use(FileSystem({ path, fs, mime, prefix: '__fs__' }));
 ```
 
-When not using a module the code will be similar. When you access URLS with
-prefix `__fs__` like `./__fs__/foo` it will read files from indexedDB file
-system named `__wayne__`. See [Lightning-FS](https://github.com/isomorphic-git/lightning-fs) repo on details about the library.
+When not using a module the code will be similar. When you access URLs with
+the prefix `__fs__` like `./__fs__/foo` it will read files from the indexedDB file
+system named `__wayne__`. See [Lightning-FS](https://github.com/isomorphic-git/lightning-fs) repo for details about the library.
 
 ### [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call) mechanism
 
-In Service worker you create generic route that send data to broadcastChannel:
+In Service Worker, you create a generic route that sends data to the BroadcastChannel:
 
 ```javascript
 import { send } from 'https://cdn.jsdelivr.net/npm/@jcubic/wayne';
@@ -208,7 +208,7 @@ app.get('/rpc/{name}/*', async (req, res) => {
 });
 ```
 
-and in the main thread you create the other side of the channel and the remote methods:
+and in the main thread, you create the other side of the channel and the remote methods:
 
 ```javascript
 import { rpc } from 'https://cdn.jsdelivr.net/npm/@jcubic/wayne';
@@ -231,7 +231,7 @@ rpc(channel, {
 });
 ```
 
-When you send request `/rpc/ping` you will get response from `methods.ping` function.
+When you send a request `/rpc/ping` you will get a response from `methods.ping` function.
 
 ```javascript
 fetch('./rpc/ping')
@@ -243,7 +243,7 @@ fetch('./rpc/ping')
 
 With this setup, you can create new functions/methods that will map to HTTP requests.
 
-The demo below uses random request:
+The demo below uses random requests:
 
 ```javascript
 let index = 0;
@@ -267,7 +267,7 @@ function random_request() {
 ### Server-Sent Events
 
 [Server-Sent Events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events) is the way to stream data in the browser.
-It's native browser implementation of Long Polling. Here is example how to use SSE with Wayne:
+It's a native browser implementation of Long Polling. Here is an example of how to use SSE with Wayne:
 
 **Service Worker**
 
@@ -307,8 +307,8 @@ sse_stop.addEventListener('click', () => {
 
 ## First load
 
-According to the spec the default behavior of service worker is to control the HTTP requests
-after reload of the page. To make the SW always in control use this code in your SW:
+According to the spec, the default behavior of the Service Worker is to control the HTTP requests
+after reloading the page. To make the SW always in control use this code in your SW:
 
 ```javascript
 self.addEventListener('activate', (event) => {
@@ -316,7 +316,7 @@ self.addEventListener('activate', (event) => {
 });
 ```
 
-You can read more in article [The service worker lifecycle](https://web.dev/service-worker-lifecycle/)
+You can read more in the article [The service worker lifecycle](https://web.dev/service-worker-lifecycle/)
 by Jake Archibald.
 
 ## Demo
@@ -329,7 +329,7 @@ by Jake Archibald.
 * [Download demo](https://jcubic.github.io/wayne/download/).
 * [Source Code Syntax highlight demo](https://jcubic.github.io/wayne/code/).
 
-The source code for the demos can be found [in docs directory at gh-pages branch](https://github.com/jcubic/wayne/tree/gh-pages/docs).
+The source code for the demos can be found [in the docs directory at the gh-pages branch](https://github.com/jcubic/wayne/tree/gh-pages/docs).
 
 ## API reference
 
@@ -341,13 +341,13 @@ Wayne object has those methods that correspond to HTTP methods
 * `delete`
 * `patch`
 
-each method accepts URL with markers inside curly brackets those markers will be available from **Request.params** object.
-Request object is browser native object of a given request see [MDN for details](https://developer.mozilla.org/en-US/docs/Web/API/Request). The only change to the native API is that the object have property **params**.
+each method accepts a URL with markers inside curly brackets those markers will be available from **Request.params** object.
+The request object is the browser native object of a given request see [MDN for details](https://developer.mozilla.org/en-US/docs/Web/API/Request). The only change to the native API is that the object has property **params**.
 
-Here are few most important Request properties:
+Here are a few most important Request properties:
 
 * `headers` - Headers object to get key/value pairs use `Object.fromEntires(req.headers.entries())`.
-* `method` - request method as string.
+* `method` - request method as a string.
 * `url` - string with full URL.
 * `referrer` - HTTP referer.
 * `arrayBuffer()` - Returns a promise that resolves with an [ArrayBuffer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer) representation of the request body.
@@ -356,39 +356,39 @@ Here are few most important Request properties:
 * `json()` - Returns a promise that resolves with the result of parsing the request body as [JSON](https://developer.mozilla.org/en-US/docs/Web/API/Request/json).
 * `text()` - Returns a promise that resolves with a text representation of the request body.
 
-**Response** object is instance of `HTTPResponse` those have methods:
+**Response** object is an instance of `HTTPResponse` those have methods:
 
 * `html()`
 * `json()`
 * `text()`
 * `send()`
 
-each of those methods accepts string as first argument. Second argument are options:
+each of those methods accepts string as the first argument. The second argument is options:
 
-* `headers` - any headers as key value pairs or you can pass [Headers object](https://developer.mozilla.org/en-US/docs/Web/API/Headers).
+* `headers` - any headers as key-value pairs or you can pass [Headers object](https://developer.mozilla.org/en-US/docs/Web/API/Headers).
 * `statusText` - The status message associated with the status code, e.g., OK.
 * `status` - The status code for the response, e.g., 200.
 * `type` - Content-Type of the response (MIME).
 
 Additional methods:
-* `redirect()` - accept url or optional first argument that is number of HTTP code
-* `sse([options])` - function create Server-Sent Event stream, the return object have method `send` that send new event.
-* `fetch(url | Request)` - method will send normal HTTP request to the server and return the result to the client. You can use default Request object from the route.
-* `download(data, { filename })` - method that can be used to trigger of file download. The data can be a `string` or `arrayBuffer` you can use native fetch API and call `await res.text()` or `await res.arrayBuffer()` and pass the result as data.
+* `redirect()` - accept URL or optional first argument that is the number of HTTP code
+* `sse([options])` - function creates Server-Sent Event stream, the return object has a method `send` that sends a new event.
+* `fetch(url | Request)` - method will send a normal HTTP request to the server and return the result to the client. You can use the default Request object from the route.
+* `download(data, { filename })` - a method that can be used to trigger file download. The data can be a `string` or `arrayBuffer` you can use native fetch API and call `await res.text()` or `await res.arrayBuffer()` and pass the result as data.
 
-Application also have middlewere as in Express.js
+The application also has middleware as in Express.js
 
 * `use(function(err,  req, res, next) {})` 4 parameters it's an error handler
 * `use(function(req, res, next) {})` 3 parameters it's a middleware
 
 Additional exported functions:
-* `FileSystem({ path: string, fs: <FS Module>, prefix: string })` - function that creates a middleware for the file system. You should use FS that supports Service Worker like the one that use [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) e.g. [BrowserFS](https://github.com/jvilk/BrowserFS) or [LightingFS](https://github.com/isomorphic-git/lightning-fs).
-* `rpc(channel, object)` - function that should be used in main thread that create RPC like mechanism, first argument is instance of a broadcast channel and second is object with remote functions.
-* `send(channel, method: string, args: any[])` - function send remote procedure to main thread.
+* `FileSystem({ path: string, fs: <FS Module>, prefix: string })` - a function that creates a middleware for the file system. You should use FS that supports Service Worker like the one that uses [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) e.g. [BrowserFS](https://github.com/jvilk/BrowserFS) or [LightingFS](https://github.com/isomorphic-git/lightning-fs).
+* `rpc(channel, object)` - a function that should be used in the main thread that creates an RPC-like mechanism. The first argument is an instance of a broadcast channel and the second is an object with remote functions.
+* `send(channel, method: string, args: any[])` - function sends remote procedure to the main thread.
 
 ## Story
 
-The idea of using a Service worker to serve pure in browser HTTP requests has a long history. I've first used this technique for my [Git Web Terminal](https://git-terminal.js.org/) and described the usage of it in the article from 2018: [How to create Web Server in Browser](https://jcubic.wordpress.com/2018/05/23/how-to-create-web-server-from-browser/). In June 2022, I came up with a cool new way of using this technique. While creating PoC for the article I'm going to write (will update this story when ready), I realized that I can extract all the logic of creating those fake HTTP requests into a library. This is how Wayne was born.
+The idea of using a Service worker to serve pure in-browser HTTP requests has a long history. I first used this technique for my [Git Web Terminal](https://git-terminal.js.org/) and described the usage of it in the article from 2018: [How to create Web Server in Browser](https://jcubic.wordpress.com/2018/05/23/how-to-create-web-server-from-browser/). In June 2022, I came up with a cool new way of using this technique. While creating PoC for the article I'm going to write (will update this story when ready), I realized that I can extract all the logic of creating those fake HTTP requests into a library. This is how Wayne was born.
 
 The name of the library was inspired by the scene in [Wayne's World 2](https://en.wikipedia.org/wiki/Wayne's_World_2) in which Wayne dresses up as a construction worker.
 
@@ -407,6 +407,7 @@ Code contributions are also welcome.
 * [Comparing Wayne.js with Express.js for service worker routing](https://blog.logrocket.com/comparing-wayne-js-express-js-service-worker-routing/)
 * [Hack to Run React Application inside Service Worker](https://dev.to/jcubic/hack-to-run-react-application-inside-service-worker-4p2f)
 * [How to create Web Server in Browser](https://itnext.io/how-to-create-web-server-in-browser-ffaa371d2b53)
+* [Hack for Syntax Highlighting of Source Code]([https://jcu.bi/blog-syntax](https://jakub.jankiewicz.org/blog/display-source-files-in-color/))
 
 ## Press
 * [Architecture Weekly](https://github.com/oskardudycz/ArchitectureWeekly)
@@ -414,7 +415,7 @@ Code contributions are also welcome.
 
 ## Acknowledge
 * Part of the content of this README was based on text from [MDN](https://developer.mozilla.org/).
-* Logo use illustration from [OpenClipart](https://openclipart.org/detail/320906/hard-hat).
+* Logo uses an illustration from [OpenClipart](https://openclipart.org/detail/320906/hard-hat).
 * This article was helpful [SSEGWSW: Server-Sent Events Gateway by Service Workers](https://medium.com/its-tinkoff/ssegwsw-server-sent-events-gateway-by-service-workers-6212c1c55184)
 
 ## License
