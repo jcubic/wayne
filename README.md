@@ -407,7 +407,7 @@ Code contributions are also welcome.
 * [Comparing Wayne.js with Express.js for service worker routing](https://blog.logrocket.com/comparing-wayne-js-express-js-service-worker-routing/)
 * [Hack to Run React Application inside Service Worker](https://dev.to/jcubic/hack-to-run-react-application-inside-service-worker-4p2f)
 * [How to create Web Server in Browser](https://itnext.io/how-to-create-web-server-in-browser-ffaa371d2b53)
-* [Hack for Syntax Highlighting of Source Code]([https://jcu.bi/blog-syntax](https://jakub.jankiewicz.org/blog/display-source-files-in-color/))
+* [Hack for Syntax Highlighting of Source Code](https://jakub.jankiewicz.org/blog/display-source-files-in-color/)
 
 ## Press
 * [Architecture Weekly](https://github.com/oskardudycz/ArchitectureWeekly)
