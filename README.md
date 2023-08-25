@@ -317,7 +317,7 @@ self.addEventListener('activate', (event) => {
 ```
 
 You can read more in the article [The service worker lifecycle](https://web.dev/service-worker-lifecycle/)
-by Jake Archibald.
+by [Jake Archibald](https://twitter.com/jaffathecake).
 
 ## Demo
 
