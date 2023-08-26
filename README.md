@@ -412,6 +412,8 @@ Code contributions are also welcome.
 ## Press
 * [Architecture Weekly](https://github.com/oskardudycz/ArchitectureWeekly)
 * [JavaScript Weekly](https://javascriptweekly.com/issues/597)
+* [Web Tools Weekly](https://webtoolsweekly.com/archives/issue-471/)
+* [Vue.js Developers Newsletter](https://vuejsdevelopers.com/newsletter/issue/265/)
 
 ## Acknowledge
 * Part of the content of this README was based on text from [MDN](https://developer.mozilla.org/).
