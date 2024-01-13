@@ -1,7 +1,7 @@
 /*
- * Wayne - Server Worker Routing library (v. 0.11.2)
+ * Wayne - Server Worker Routing library (v. 0.12.0)
  *
- * Copyright (c) 2022-2023 Jakub T. Jankiewicz <https://jcubic.pl/me>
+ * Copyright (c) 2022-2024 Jakub T. Jankiewicz <https://jcubic.pl/me>
  * Released under MIT license
  */
 
@@ -319,46 +319,72 @@ async function list_dir({ fs, path }, path_name) {
     }));
 }
 
-export function FileSystem({ prefix, path, fs, mime }) {
+export function FileSystem(options) {
+    const {
+        prefix = '',
+        test,
+        path,
+        fs,
+        mime,
+        default_file = 'index.html'
+    } = options;
+
     if (!isPromiseFs(fs)) {
         throw new Error('Wayne: only promise based FS accepted');
     }
     const parser = new RouteParser();
-    if (!prefix.startsWith('/')) {
+    if (prefix && !prefix.startsWith('/')) {
         prefix = `/${prefix}`;
+    }
+    if (!test) {
+        test = path_name => path_name.startsWith(prefix);
+    }
+    async function serve(res, path_name) {
+        const ext = path.extname(path_name);
+        const type = mime.getType(ext);
+        const data = await fs.readFile(path_name);
+        res.send(data, { type });
     }
     return async function(req, res, next) {
         const method = req.method;
         const url = new URL(req.url);
         let path_name = normalize_url(decodeURIComponent(url.pathname));
-        if (path_name.startsWith(prefix)) {
-            if (req.method !== 'GET') {
-                return res.send('Method Not Allowed', { status: 405 });
-            }
+        if (!test(url)) {
+            return next();
+        }
+        if (req.method !== 'GET') {
+            return res.send('Method Not Allowed', { status: 405 });
+        }
+        if (prefix) {
             path_name = path_name.substring(prefix.length);
-            if (!path_name) {
-                path_name = '/';
-            }
-            try {
-                const stat = await fs.stat(path_name);
+        }
+        if (!path_name) {
+            path_name = '/';
+        }
+        try {
+            const stat = await fs.stat(path_name);
 
+            if (stat.isFile()) {
+                await serve(res, path_name);
+            } else if (stat.isDirectory()) {
+                const default_path = path.join(path_name, default_file)
+                const stat = await fs.stat(default_path);
                 if (stat.isFile()) {
-                    const ext = path.extname(path_name);
-                    const type = mime.getType(ext);
-                    const data = await fs.readFile(path_name);
-                    res.send(data, { type });
-                } else if (stat.isDirectory()) {
-                    res.html(...dir(prefix, path_name, await list_dir({ fs, path }, path_name)));
-                }
-            } catch(e) {
-                if (typeof stat === 'undefined') {
-                    res.html(...error404(path_name));
+                    await serve(res, default_path);
                 } else {
-                    res.html(...error500(error));
+                    res.html(...dir(
+                        prefix,
+                        path_name,
+                        await list_dir({ fs, path }, path_name)
+                    ));
                 }
             }
-        } else {
-            next();
+        } catch(e) {
+            if (typeof stat === 'undefined') {
+                res.html(...error404(path_name));
+            } else {
+                res.html(...error500(error));
+            }
         }
     };
 }

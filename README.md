@@ -3,7 +3,7 @@
        alt="Logo of Wayne library - it represents construction worker helmet and text with the name of the library" />
 </h1>
 
-[![npm](https://img.shields.io/badge/npm-0.11.2-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
+[![npm](https://img.shields.io/badge/npm-0.12.0-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
 
 [Service Worker Routing library for in-browser HTTP requests](https://github.com/jcubic/wayne/)
@@ -186,6 +186,22 @@ app.use(FileSystem({ path, fs, mime, prefix: '__fs__' }));
 When not using a module the code will be similar. When you access URLs with
 the prefix `__fs__` like `./__fs__/foo` it will read files from the indexedDB file
 system named `__wayne__`. See [Lightning-FS](https://github.com/isomorphic-git/lightning-fs) repo for details about the library.
+
+From version 0.12 you can use `test` callback option to check if the file should serve from the filesystem. Note that it will receive URLs from all domains:
+
+```javascript
+const test = url => {
+    if (url.host !== self.location.hostname) {
+        // allow all different domains
+        return false;
+    }
+    const path = url.pathname;
+    // return true if pathname should go to filesystem
+    return path.match(/__fs__/);
+};
+
+app.use(wayne.FileSystem({ path, fs, mime, test }));
+```
 
 ### [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call) mechanism
 
@@ -423,4 +439,4 @@ Code contributions are also welcome.
 ## License
 
 Released with [MIT](http://opensource.org/licenses/MIT) license<br/>
-Copyright (c) 2022-2023 [Jakub T. Jankiewicz](https://jcubic.pl/me)
+Copyright (c) 2022-2024 [Jakub T. Jankiewicz](https://jcubic.pl/me)

@@ -1,3 +1,8 @@
+## 0.12.0
+### Features
+* add `default_file` (default `index.html`) for `FileSystem`
+* add `test` callback to check when to serve files from fs
+
 ## 0.11.2
 ### Bugfix
 * don't show stack trace when request is blocked by AdBlock

@@ -1,10 +1,10 @@
 /*
- * Wayne - Server Worker Routing library (v. 0.11.1)
+ * Wayne - Server Worker Routing library (v. 0.11.2)
  *
- * Copyright (c) 2022-2023 Jakub T. Jankiewicz <https://jcubic.pl/me>
+ * Copyright (c) 2022-2024 Jakub T. Jankiewicz <https://jcubic.pl/me>
  * Released under MIT license
  *
- * Tue, 22 Aug 2023 17:53:36 +0000
+ * Sat, 13 Jan 2024 17:29:40 +0000
  */
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.wayne = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
@@ -20,9 +20,9 @@ exports.rpc = rpc;
 exports.send = send;
 
 /*
- * Wayne - Server Worker Routing library (v. 0.11.2)
+ * Wayne - Server Worker Routing library (v. 0.12.0)
  *
- * Copyright (c) 2022-2023 Jakub T. Jankiewicz <https://jcubic.pl/me>
+ * Copyright (c) 2022-2024 Jakub T. Jankiewicz <https://jcubic.pl/me>
  * Released under MIT license
  */
 const root_url = location.pathname.replace(/\/[^\/]+$/, '');
@@ -382,20 +382,37 @@ async function list_dir({
   }));
 }
 
-function FileSystem({
-  prefix,
-  path,
-  fs,
-  mime
-}) {
+function FileSystem(options) {
+  const {
+    prefix = '',
+    test,
+    path,
+    fs,
+    mime,
+    default_file = 'index.html'
+  } = options;
+
   if (!isPromiseFs(fs)) {
     throw new Error('Wayne: only promise based FS accepted');
   }
 
   const parser = new RouteParser();
 
-  if (!prefix.startsWith('/')) {
+  if (prefix && !prefix.startsWith('/')) {
     prefix = `/${prefix}`;
+  }
+
+  if (!test) {
+    test = path_name => path_name.startsWith(prefix);
+  }
+
+  async function serve(res, path_name) {
+    const ext = path.extname(path_name);
+    const type = mime.getType(ext);
+    const data = await fs.readFile(path_name);
+    res.send(data, {
+      type
+    });
   }
 
   return async function (req, res, next) {
@@ -403,44 +420,48 @@ function FileSystem({
     const url = new URL(req.url);
     let path_name = normalize_url(decodeURIComponent(url.pathname));
 
-    if (path_name.startsWith(prefix)) {
-      if (req.method !== 'GET') {
-        return res.send('Method Not Allowed', {
-          status: 405
-        });
-      }
+    if (!test(url)) {
+      return next();
+    }
 
+    if (req.method !== 'GET') {
+      return res.send('Method Not Allowed', {
+        status: 405
+      });
+    }
+
+    if (prefix) {
       path_name = path_name.substring(prefix.length);
+    }
 
-      if (!path_name) {
-        path_name = '/';
-      }
+    if (!path_name) {
+      path_name = '/';
+    }
 
-      try {
-        const stat = await fs.stat(path_name);
+    try {
+      const stat = await fs.stat(path_name);
+
+      if (stat.isFile()) {
+        await serve(res, path_name);
+      } else if (stat.isDirectory()) {
+        const default_path = path.join(path_name, default_file);
+        const stat = await fs.stat(default_path);
 
         if (stat.isFile()) {
-          const ext = path.extname(path_name);
-          const type = mime.getType(ext);
-          const data = await fs.readFile(path_name);
-          res.send(data, {
-            type
-          });
-        } else if (stat.isDirectory()) {
+          await serve(res, default_path);
+        } else {
           res.html(...dir(prefix, path_name, await list_dir({
             fs,
             path
           }, path_name)));
         }
-      } catch (e) {
-        if (typeof stat === 'undefined') {
-          res.html(...error404(path_name));
-        } else {
-          res.html(...error500(error));
-        }
       }
-    } else {
-      next();
+    } catch (e) {
+      if (typeof stat === 'undefined') {
+        res.html(...error404(path_name));
+      } else {
+        res.html(...error500(error));
+      }
     }
   };
 }
