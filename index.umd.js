@@ -19,7 +19,7 @@ exports.Wayne = void 0;
 exports.rpc = rpc;
 exports.send = send;
 /*
- * Wayne - Server Worker Routing library (v. 0.13.0)
+ * Wayne - Server Worker Routing library (v. 0.14.0)
  *
  * Copyright (c) 2022-2024 Jakub T. Jankiewicz <https://jcubic.pl/me>
  * Released under MIT license
