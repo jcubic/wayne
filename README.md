@@ -412,7 +412,6 @@ The name of the library was inspired by the scene in [Wayne's World 2](https://e
 
 I highly recommend both movies if you haven't seen them already.
 
-
 ## Contribution
 If you have any ideas for an improvement don't hesitate to create an issue.
 Code contributions are also welcome.
