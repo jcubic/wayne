@@ -187,7 +187,9 @@ When not using a module the code will be similar. When you access URLs with
 the prefix `__fs__` like `./__fs__/foo` it will read files from the indexedDB file
 system named `__wayne__`. See [Lightning-FS](https://github.com/isomorphic-git/lightning-fs) repo for details about the library.
 
-From version 0.12 you can use `test` callback option to check if the file should serve from the filesystem. Note that it will receive URLs from all domains:
+From version 0.12 you can use `test` callback option to check if the file should serve from the filesystem. Note that it will receive URLs from all domains.
+
+From version 0.13.0 you can use `dir` callback function that allow to dynamically change directory of served files.
 
 ```javascript
 const test = url => {
@@ -200,8 +202,14 @@ const test = url => {
     return path.match(/__fs__/);
 };
 
-app.use(wayne.FileSystem({ path, fs, mime, test }));
+const dir = () => '/';
+
+app.use(wayne.FileSystem({ path, fs, mime, test, dir }));
 ```
+
+From version 0.14.0 both functions `dir` and `test` can be async. So you can use data from IndexedDB
+e.g. using [idb-keyval](https://github.com/jakearchibald/idb-keyval) by Jake Archibald.
+
 
 ### [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call) mechanism
 
