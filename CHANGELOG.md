@@ -1,6 +1,7 @@
 ## 0.13.0
 ### Features
 * allow to use non promise FS libraries like `BrowserFS` with FileSystem middleware
+* add `dir` option to FileSystem middleware to change default FS directory
 ### Bugfix
 * fix errors with `FileSystem` when `prefix` or `test` are not defined
 
