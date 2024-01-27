@@ -382,7 +382,7 @@ export function FileSystem(options) {
             return res.send('Method Not Allowed', { status: 405 });
         }
         url.pathname = path_name;
-        if (!test(url)) {
+        if (!await test(url)) {
             return next();
         }
         if (prefix) {
@@ -391,7 +391,7 @@ export function FileSystem(options) {
         if (!path_name) {
             path_name = '/';
         }
-        path_name = path.join(dir(), path_name);
+        path_name = path.join(await dir(), path_name);
         try {
             const stat = await fs.stat(path_name);
 

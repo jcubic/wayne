@@ -1,3 +1,7 @@
+## 0.14.0
+### Features
+* allow to use async function in `test` and `dir` with FileSystem middleware
+
 ## 0.13.0
 ### Features
 * allow to use non promise FS libraries like `BrowserFS` with FileSystem middleware
