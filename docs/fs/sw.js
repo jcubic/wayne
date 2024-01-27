@@ -1,6 +1,6 @@
 import { Wayne, FileSystem } from "https://cdn.jsdelivr.net/npm/@jcubic/wayne/index.js";
 import FS from "https://cdn.skypack.dev/@isomorphic-git/lightning-fs";
-import mime from "https://cdn.skypack.dev/mime";
+import mime from "https://cdn.skypack.dev/mime@4.0.0";
 import path from "https://cdn.skypack.dev/path-browserify";
 
 const { promises: fs } = new FS("__wayne__");
