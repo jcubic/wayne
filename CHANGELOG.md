@@ -1,3 +1,9 @@
+## 0.13.0
+### Features
+* allow to use non promise FS libraries like `BrowserFS` with FileSystem middleware
+### Bugfix
+* fix errors with `FileSystem` when `prefix` or `test` are not defined
+
 ## 0.12.0
 ### Features
 * add `default_file` (default `index.html`) for `FileSystem`

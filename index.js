@@ -40,6 +40,36 @@ function isPromiseFs(fs) {
     }
     return is_promise(test(fs));
 }
+// List of commands all filesystems are expected to provide
+const commands = [
+    'stat',
+    'readdir',
+    'readFile'
+];
+
+function bind_fs(fs) {
+    const result = {};
+    if (isPromiseFs(fs)) {
+        for (const command of commands) {
+            result[command] = fs[command].bind(fs);
+        }
+    } else {
+        for (const command of commands) {
+            result[command] = function(...args) {
+                return new Promise((resolve, reject) => {
+                    fs[command](...args, function(err, data) {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(data);
+                        }
+                    });
+                });
+            };
+        }
+    }
+    return result;
+}
 
 export class HTTPResponse {
     constructor(resolve, reject) {
@@ -320,24 +350,22 @@ async function list_dir({ fs, path }, path_name) {
 }
 
 export function FileSystem(options) {
-    const {
+    let {
+        path,
         prefix = '',
         test,
-        path,
         fs,
         mime,
         default_file = 'index.html'
     } = options;
 
-    if (!isPromiseFs(fs)) {
-        throw new Error('Wayne: only promise based FS accepted');
-    }
+    fs = bind_fs(fs);
     const parser = new RouteParser();
     if (prefix && !prefix.startsWith('/')) {
         prefix = `/${prefix}`;
     }
     if (!test) {
-        test = path_name => path_name.startsWith(prefix);
+        test = url => url.pathname.startsWith(prefix);
     }
     async function serve(res, path_name) {
         const ext = path.extname(path_name);
@@ -349,11 +377,12 @@ export function FileSystem(options) {
         const method = req.method;
         const url = new URL(req.url);
         let path_name = normalize_url(decodeURIComponent(url.pathname));
-        if (!test(url)) {
-            return next();
-        }
         if (req.method !== 'GET') {
             return res.send('Method Not Allowed', { status: 405 });
+        }
+        url.pathname = path_name;
+        if (!test(url)) {
+            return next();
         }
         if (prefix) {
             path_name = path_name.substring(prefix.length);
