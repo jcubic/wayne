@@ -1,3 +1,8 @@
+## 0.14.1
+### Bug fix
+* fix throwing error from FileSystem when different HTTP requests is sent
+* ignore requests to different domains with FileSystem
+
 ## 0.14.0
 ### Features
 * allow to use async function in `test` and `dir` with FileSystem middleware

@@ -378,12 +378,12 @@ export function FileSystem(options) {
         const method = req.method;
         const url = new URL(req.url);
         let path_name = normalize_url(decodeURIComponent(url.pathname));
+        url.pathname = path_name;
+        if (!(url.host === self.location.hostname && await test(url))) {
+            return next();
+        }
         if (req.method !== 'GET') {
             return res.send('Method Not Allowed', { status: 405 });
-        }
-        url.pathname = path_name;
-        if (!await test(url)) {
-            return next();
         }
         if (prefix) {
             path_name = path_name.substring(prefix.length);
