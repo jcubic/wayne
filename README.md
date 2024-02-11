@@ -193,10 +193,6 @@ From version 0.13.0 you can use `dir` callback function that allow to dynamicall
 
 ```javascript
 const test = url => {
-    if (url.host !== self.location.hostname) {
-        // allow all different domains
-        return false;
-    }
     const path = url.pathname;
     // return true if pathname should go to filesystem
     return path.match(/__fs__/);
