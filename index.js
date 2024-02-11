@@ -379,7 +379,8 @@ export function FileSystem(options) {
         const url = new URL(req.url);
         let path_name = normalize_url(decodeURIComponent(url.pathname));
         url.pathname = path_name;
-        if (!(url.host === self.location.hostname && await test(url))) {
+        console.log(url);
+        if (!(url.hostname === self.location.hostname && await test(url))) {
             return next();
         }
         if (req.method !== 'GET') {

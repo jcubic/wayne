@@ -1,3 +1,7 @@
+## 0.14.2
+### Bug fix
+* fix check if request came from a different domain in the FileSystem
+
 ## 0.14.1
 ### Bug fix
 * fix throwing error from FileSystem when different HTTP requests is sent
