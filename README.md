@@ -10,7 +10,10 @@
 
 It's like an Express inside Service Worker.
 
-Most of the time Service Worker is used for caching HTTP requests and making the app work when there is no internet (mostly for [PWA](https://en.wikipedia.org/wiki/Progressive_web_application)), but in fact, you can create completely new responses to requests that never leave the browser. This library makes that easier by adding a simple API similar to Express.
+Most of the time Service Worker is used for caching HTTP requests and making the app work when there
+is no internet (mostly for [PWA](https://en.wikipedia.org/wiki/Progressive_web_application)), but in
+fact, you can create completely new responses to requests that never leave the browser. This library
+makes that easier by adding a simple API similar to Express.
 
 ## Usage
 
@@ -66,7 +69,7 @@ if ('serviceWorker' in navigator) {
 }
 ```
 
-Inside same file you can send [AJAX](https://en.wikipedia.org/wiki/Ajax_(programming)) requests with standard
+Inside the same file you can send [AJAX](https://en.wikipedia.org/wiki/Ajax_(programming)) requests with standard
 [fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).
 
 ```javascript
@@ -164,9 +167,9 @@ app.get('*', function(req, res) {
 });
 ```
 
-This code will show the comment `// Sorry no source code for you` for every
-request to JavaScript files from the browser (if open in a new tab).
-When you want to view the file the browser sends `Accept: text/html` HTTP header.
+This code will show the comment `// Sorry no source code for you` for every request to JavaScript
+files from the browser (if open in a new tab).  When you want to view the file the browser sends
+`Accept: text/html` HTTP header.
 
 ### File system middleware
 
@@ -205,6 +208,33 @@ app.use(wayne.FileSystem({ path, fs, mime, test, dir }));
 
 From version 0.14.0 both functions `dir` and `test` can be async. So you can use data from IndexedDB
 e.g. using [idb-keyval](https://github.com/jakearchibald/idb-keyval) by Jake Archibald.
+
+A patch in 0.14.3 allow putting interceptors to inject something into output HTML from FileSystem
+middleware. You do this by adding middleware before FileSystem and patch `res.send` method:
+
+
+```javascript
+function fs_interecept(callback) {
+    return function(req, res, next) {
+        const send = res.send.bind(res);
+        res.send = function(data, ...rest) {
+            const url = new URL(req.url);
+            if (test(url)) {
+                data = callback(data);
+            }
+            return send(data, ...rest);
+        };
+        next();
+    };
+}
+
+app.use(fs_interecept(function(html) {
+    return html.replace(/<\/body>/, `<script>console.log('intercepted')</script></body>`);
+}));
+```
+
+You should use the same `test` function to make sure that you patch only those requests that came
+from FS.
 
 
 ### [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call) mechanism
@@ -286,8 +316,9 @@ function random_request() {
 
 ### Server-Sent Events
 
-[Server-Sent Events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events) is the way to stream data in the browser.
-It's a native browser implementation of Long Polling. Here is an example of how to use SSE with Wayne:
+[Server-Sent Events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events)
+is the way to stream data in the browser.  It's a native browser implementation of Long
+Polling. Here is an example of how to use SSE with Wayne:
 
 **Service Worker**
 
@@ -349,7 +380,8 @@ by [Jake Archibald](https://twitter.com/jaffathecake).
 * [Download demo](https://jcubic.github.io/wayne/download/).
 * [Source Code Syntax highlight demo](https://jcubic.github.io/wayne/code/).
 
-The source code for the demos can be found [in the docs directory at the gh-pages branch](https://github.com/jcubic/wayne/tree/gh-pages/docs).
+The source code for the demos can be found
+[in the docs' directory at the gh-pages branch](https://github.com/jcubic/wayne/tree/gh-pages/docs).
 
 ## API reference
 
@@ -408,16 +440,24 @@ Additional exported functions:
 
 ## Story
 
-The idea of using a Service worker to serve pure in-browser HTTP requests has a long history. I first used this technique for my [Git Web Terminal](https://git-terminal.js.org/) and described the usage of it in the article from 2018: [How to create Web Server in Browser](https://jcubic.wordpress.com/2018/05/23/how-to-create-web-server-from-browser/). In June 2022, I came up with a cool new way of using this technique. While creating PoC for the article I'm going to write (will update this story when ready), I realized that I can extract all the logic of creating those fake HTTP requests into a library. This is how Wayne was born.
+The idea of using a Service worker to serve pure in-browser HTTP requests has a long history. I
+first used this technique for my [Git Web Terminal](https://git-terminal.js.org/) and described the
+usage of it in the article from 2018:
+[How to create Web Server in Browser](https://jcubic.wordpress.com/2018/05/23/how-to-create-web-server-from-browser/).
+In June 2022, I came up with a cool new way of using this technique. While creating PoC for the
+article I'm going to write (will update this story when ready), I realized that I can extract all
+the logic of creating those fake HTTP requests into a library. This is how Wayne was born.
 
-The name of the library was inspired by the scene in [Wayne's World 2](https://en.wikipedia.org/wiki/Wayne's_World_2) in which Wayne dresses up as a construction worker.
+The name of the library was inspired by the scene in
+[Wayne's World 2](https://en.wikipedia.org/wiki/Wayne's_World_2) in which Wayne dresses up as a construction
+worker.
 
 [![Watch the video](https://github.com/jcubic/wayne/blob/master/assets/wayne's-world-screen-capture.png?raw=true)](https://youtu.be/89W-lCTFT2o)
 
 I highly recommend both movies if you haven't seen them already.
 
 ## Contribution
-If you have any ideas for an improvement don't hesitate to create an issue.
+If you have any ideas for an improvement, don't hesitate to create an issue.
 Code contributions are also welcome.
 
 **Working on your first Pull Request?** You can learn how from this *free* series [How to Contribute to an Open Source Project on GitHub](https://kcd.im/pull-request)
