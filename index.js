@@ -1,5 +1,5 @@
 /*
- * Wayne - Server Worker Routing library (v. 0.14.2)
+ * Wayne - Server Worker Routing library (v. 0.14.3)
  *
  * Copyright (c) 2022-2024 Jakub T. Jankiewicz <https://jcubic.pl/me>
  * Released under MIT license
@@ -371,7 +371,7 @@ export function FileSystem(options) {
     async function serve(res, path_name) {
         const ext = path.extname(path_name);
         const type = mime.getType(ext);
-        const data = await fs.readFile(path_name);
+        const data = await fs.readFile(path_name, 'utf8');
         res.send(data, { type });
     }
     return async function(req, res, next) {
@@ -379,7 +379,6 @@ export function FileSystem(options) {
         const url = new URL(req.url);
         let path_name = normalize_url(decodeURIComponent(url.pathname));
         url.pathname = path_name;
-        console.log(url);
         if (!(url.hostname === self.location.hostname && await test(url))) {
             return next();
         }
@@ -412,6 +411,7 @@ export function FileSystem(options) {
                 }
             }
         } catch(e) {
+            console.log(e.stack);
             if (typeof stat === 'undefined') {
                 res.html(...error404(path_name));
             } else {

@@ -1,3 +1,7 @@
+## 0.14.3
+### Bug fix
+* fix intercepting html from FileSystem middleware
+
 ## 0.14.2
 ### Bug fix
 * fix check if request came from a different domain in the FileSystem
