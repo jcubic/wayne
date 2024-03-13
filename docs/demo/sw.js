@@ -30,7 +30,7 @@ app.get('/message', function(req, res) {
 });
 
 app.get('/external', function(req, res) {
-  res.redirect('https://api.buildable.dev/@62d55492951509001abc363e/live/lorem-ipsum');
+  res.redirect('https://cdn.jsdelivr.net/gh/jcubic/wayne/banner.js');
 });
 
 app.get('https://github.com/{user}/{repo}', (req, res) => {
