@@ -26,6 +26,7 @@
 <button id="redirect" disabled>redirect</button>
 <button id="external_redirect" disabled>external redirect</button>
 <button id="glob" disabled>glob</button>
+<button id="remote" disabled>remote</button>
 <button id="rpc" disabled>random rpc</button>
 <a href="./download" target="_blank">download</a>
 <br/>
@@ -55,6 +56,7 @@
                   redirect.disabled = false;
                   rpc.disabled = false;
                   glob.disabled = false;
+                  remote.disabled = false;
                   external_redirect.disabled = false;
                   set('Ready');
               }).catch(function(error) {
@@ -91,6 +93,10 @@
 
  redirect.addEventListener('click', () => {
      get('./redirect');
+ });
+
+ remote.addEventListener('click', () => {
+     get('https://github.com/jcubic/wayne');
  });
 
  external_redirect.addEventListener('click', () => {

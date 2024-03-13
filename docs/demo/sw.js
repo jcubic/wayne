@@ -33,6 +33,10 @@ app.get('/external', function(req, res) {
   res.redirect('https://api.buildable.dev/@62d55492951509001abc363e/live/lorem-ipsum');
 });
 
+app.get('https://github.com/{user}/{repo}', (req, res) => {
+    res.text(`Sorry, you can't fetch ${req.params.user} repo named ${req.params.repo}`);
+});
+
 app.get('/sse', function(req, res) {
   const stream = res.sse({
     onClose() {
