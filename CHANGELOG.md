@@ -1,3 +1,7 @@
+## 0.15.0
+### Features
+* allow using full URL to intercept external URLs
+
 ## 0.14.3
 ### Bug fix
 * fix intercepting html from FileSystem middleware

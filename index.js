@@ -211,7 +211,7 @@ export function RouteParser() {
     };
     const parse = self.route_parser(open_tag, close_tag);
     self.parse = parse;
-    self.pick = function(routes, url) {
+    self.pick = function(routes, url, origin) {
         let input;
         let keys;
         if (routes instanceof Array) {
@@ -226,7 +226,17 @@ export function RouteParser() {
         }
         const results = [];
         for (let i=keys.length; i--;) {
-            const pattern = keys[i];
+            const key = keys[i];
+            let pattern;
+            if (key.match(/:\/\//)) {
+                const url = new URL(key);
+                if (url.origin !== origin) {
+                    continue;
+                }
+                pattern = key.replace(url.origin, '');
+            } else {
+                pattern = key;
+            }
             const parts = parse(pattern);
             const m = url.match(new RegExp('^' + parts.re + '$'));
             if (m) {
@@ -238,7 +248,7 @@ export function RouteParser() {
                     });
                 }
                 results.push({
-                    pattern,
+                    pattern: key,
                     data
                 });
             }
@@ -439,9 +449,10 @@ export class Wayne {
                     const method = req.method;
                     const url = new URL(req.url);
                     const path = normalize_url(url.pathname);
+                    const origin = url.origin;
                     const routes = this._routes[method];
                     if (routes) {
-                        const match = this._parser.pick(routes, path);
+                        const match = this._parser.pick(routes, path, origin);
                         if (match.length) {
                             const [first_match] = match;
                             const fns = [...this._middlewares, ...routes[first_match.pattern]];
