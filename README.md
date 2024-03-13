@@ -356,6 +356,29 @@ sse_stop.addEventListener('click', () => {
 });
 ```
 
+## 3rd party URL
+Service Worker allows intercepting everything that origineted from the page that has service worker
+inclding URLs from different origin. From version 0.15.0 Wayne allow to inrecept such URLs. You just use
+full URL instead of just path as a route:
+
+```javascript
+app.get('https://github.com/{user}/{repo}', (req, res) => {
+    res.text(`Sorry, you can't fetch ${req.params.user} repo named ${req.params.repo}`);
+});
+```
+
+If you run fetch in browser:
+
+```javascript
+await fetch('https://github.com/jcubic/wayne').then(res => res.text());
+```
+
+you will get the string:
+
+```javascript
+"Sorry, you can't fetch jcubic repo named wayne"
+```
+
 ## First load
 
 According to the spec, the default behavior of the Service Worker is to control the HTTP requests
@@ -371,7 +394,6 @@ You can read more in the article [The service worker lifecycle](https://web.dev/
 by [Jake Archibald](https://twitter.com/jaffathecake).
 
 ## Demo
-
 * [All in one demo](https://jcubic.github.io/wayne/demo).
 * Proof of Concept of [ReactJS application inside Service Worker](https://jcubic.github.io/wayne/jsx/public/).
 * [Filesystem demo](https://jcubic.github.io/wayne/fs/).
