@@ -356,7 +356,7 @@ sse_stop.addEventListener('click', () => {
 });
 ```
 
-## 3rd party URL
+### 3rd party URL
 Service Worker allows intercepting everything that origineted from the page that has service worker
 inclding URLs from different origin. From version 0.15.0 Wayne allow to inrecept such URLs. You just use
 full URL instead of just path as a route:
@@ -378,6 +378,53 @@ you will get the string:
 ```javascript
 "Sorry, you can't fetch jcubic repo named wayne"
 ```
+
+### Using with ES Modules
+You can intercept the import of ES Module with Wayne. Here is example:
+
+**main code**
+```html
+<script>
+window.ready = navigator.serviceWorker.register('./sw.js', { scope: location.pathname })
+</script>
+<script type="module">
+// wait for Service Woker
+await window.ready;
+import $ from './@jquery';
+$('body').css('background', 'rebeccapurple');
+</script>
+```
+
+And here is how the service worker Wayne code look like:
+
+```javascript
+app.get('*', (req, res) => {
+  const url = new URL(req.url);
+  const name = req.url.replace(/.*@/, '');
+  if (url.pathname.match(/\+esm/)) {
+    res.fetch(`https://cdn.jsdelivr.net${url.pathname}`);
+  } else if (url.pathname.match(/@/)) {
+     if (name.match(/css/)) {
+        res.fetch(`https://cdn.jsdelivr.net/npm/${name}`);
+     } else {
+        res.fetch(`https://esm.run/${name}`);
+     }
+  } else {
+     res.fetch(req);
+  }
+});
+```
+
+The code checks if the URL contain `@` in the path and redirect them to
+[https://esm.run](https://www.jsdelivr.com/esm). If the script import other scrips they usually look like this:
+
+```javascript
+import require$$0 from"/npm/jquery@3.7.1/+esm"
+```
+
+And needs to be imported from jsDelivr, the same if you import CSS file.
+See [example of loading jQuery Terminal](https://jcubic.github.io/wayne/esm/) where this code is used.
+
 
 ## First load
 
