@@ -15,12 +15,17 @@
     <script type="module">
     // wait for Service Woker
     await window.ready;
+    // next tick delay is require for the worker to intitialize properly
+    await new Promise(resolve => setTimeout(resolve, 0));
 
-    import terminal from './@jquery.terminal';
+    // static imports works only when you install and refresh the browser
+    // they probbaly run just after the code is parsed
+    const { default: terminal } = await import('./@jquery.terminal');
+
     const $ = terminal(window);
     const css = './@jquery.terminal/css/jquery.terminal.min.css'
     $(`<link href="${css}" rel="stylesheet"/>`).appendTo('head');
-    $('body').terminal();
+    $('body').terminal();    
     </script>
   </body>
 </html>
