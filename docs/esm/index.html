@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ES Module</title>
+  </head>
+  <body>
+    <script>
+     if ('serviceWorker' in navigator) {
+        window.ready = navigator.serviceWorker.register('./sw.js', { scope: location.pathname })
+                      .catch(function(error) {
+                          console.log('Registration failed with ' + error);
+                      });
+     }
+    </script>
+    <script type="module">
+    // wait for Service Woker
+    await window.ready;
+
+    import terminal from './@jquery.terminal';
+    const $ = terminal(window);
+    const css = './@jquery.terminal/css/jquery.terminal.min.css'
+    $(`<link href="${css}" rel="stylesheet"/>`).appendTo('head');
+    $('body').terminal();
+    </script>
+  </body>
+</html>
