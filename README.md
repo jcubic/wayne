@@ -88,7 +88,6 @@ error.addEventListener('click', () => {
 });
 ```
 
-
 Service worker - **sw.js** file
 
 Importing Wayne module:
@@ -382,7 +381,7 @@ you will get the string:
 ### Using with ES Modules
 You can intercept the import of ES Module with Wayne. Here is example:
 
-**main code**
+**Main tread**
 ```html
 <script>
 window.ready = navigator.serviceWorker.register('./sw.js', { scope: location.pathname })
@@ -390,12 +389,18 @@ window.ready = navigator.serviceWorker.register('./sw.js', { scope: location.pat
 <script type="module">
 // wait for Service Woker
 await window.ready;
-import $ from './@jquery';
+// next tick delay is require for the worker to intitialize properly
+await new Promise(resolve => setTimeout(resolve, 0));
+
+// static imports works only when you install and refresh the browser
+// they probbaly run just after the code is parsed
+const { default: $ } = await import('./@jquery');
+
 $('body').css('background', 'rebeccapurple');
 </script>
 ```
 
-And here is how the service worker Wayne code look like:
+**Service Worker**
 
 ```javascript
 app.get('*', (req, res) => {
