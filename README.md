@@ -459,16 +459,21 @@ The source code for the demos can be found
 
 ## API reference
 
-Wayne object has those methods that correspond to HTTP methods
+Wayne constrcutor accept object with options:
+* `filter` - a function that is called with request object, and should return false if the request
+  should not be proxied with Service Worker.
 
+Wayne object has those methods that correspond to HTTP methods
 * `get`
 * `post`
 * `put`
 * `delete`
 * `patch`
 
-each method accepts a URL with markers inside curly brackets those markers will be available from **Request.params** object.
-The request object is the browser native object of a given request see [MDN for details](https://developer.mozilla.org/en-US/docs/Web/API/Request). The only change to the native API is that the object has property **params**.
+Each method accepts a URL with markers inside curly brackets, those markers will be available from
+**Request.params** object.  The request object is the browser native object of a given request see
+[MDN for details](https://developer.mozilla.org/en-US/docs/Web/API/Request). The only change to the
+native API is that the object has property **params**.
 
 Here are a few most important Request properties:
 

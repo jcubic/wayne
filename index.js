@@ -432,13 +432,16 @@ export function FileSystem(options) {
 }
 
 export class Wayne {
-    constructor() {
+    constructor({ filter = () => true }) {
         this._er_handlers = [];
         this._middlewares = [];
         this._routes = {};
         this._timeout = 5 * 60 * 1000; // 5 minutes
         this._parser = new RouteParser();
         self.addEventListener('fetch', (event) => {
+            if (filter(event.request) === false) {
+                return;
+            }
             const promise = new Promise(async (resolve, reject) => {
                 const req = event.request;
                 try {

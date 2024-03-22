@@ -1,3 +1,7 @@
+## 0.16.0
+### Features
+* add `filter` option to Wayne constructor
+
 ## 0.15.0
 ### Features
 * allow using full URL to intercept external URLs
