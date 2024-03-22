@@ -378,6 +378,17 @@ you will get the string:
 "Sorry, you can't fetch jcubic repo named wayne"
 ```
 
+If you want to restrict the request to only same origin you can do this with filter option:
+
+```javascript
+const app = new Wayne({
+    filter: req => {
+        const url = new URL(req.url);
+        return url.host === self.location.host;
+    }
+});
+```
+
 ### Using with ES Modules
 You can intercept the import of ES Module with Wayne. Here is example:
 
