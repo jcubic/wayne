@@ -1,3 +1,7 @@
+## 0.16.1
+### Bug fix
+* fix for default options object in Wayne constructor
+
 ## 0.16.0
 ### Features
 * add `filter` option to Wayne constructor

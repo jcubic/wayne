@@ -432,7 +432,7 @@ export function FileSystem(options) {
 }
 
 export class Wayne {
-    constructor({ filter = () => true }) {
+    constructor({ filter = () => true } = {}) {
         this._er_handlers = [];
         this._middlewares = [];
         this._routes = {};
