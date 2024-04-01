@@ -5,7 +5,7 @@
  * Released under MIT license
  */
 
-const root_url = location.pathname.replace(/\/[^\/]+$/, '');
+const root_url = self.registration.scope;
 const root_url_re = new RegExp('^' + escape_re(root_url));
 
 function normalize_url(url) {
