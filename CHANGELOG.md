@@ -1,3 +1,7 @@
+## 0.16.2
+### Bug fix
+* fix accessing service worker for directories that don't end with trailing slash [#33](https://github.com/jcubic/wayne/issues/33)
+
 ## 0.16.1
 ### Bug fix
 * fix for default options object in Wayne constructor
