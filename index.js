@@ -5,8 +5,16 @@
  * Released under MIT license
  */
 
-const root_url = self.registration.scope;
+const root_url = get_root_path();
 const root_url_re = new RegExp('^' + escape_re(root_url));
+
+function get_root_path() {
+    if (self.registration) {
+        const url = new URL(registration.scope);
+        return url.pathname;
+    }
+    return location.pathname.replace(/\/[^\/]+$/, '');
+}
 
 function normalize_url(url) {
     return url.replace(root_url_re, '');
