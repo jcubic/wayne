@@ -30,7 +30,7 @@ const root_url_re = new RegExp('^' + escape_re(root_url));
 function get_root_path() {
   if (self.registration) {
     const url = new URL(registration.scope);
-    return url.pathname;
+    return url.pathname.replace(/\/$/, '');
   }
   return location.pathname.replace(/\/[^\/]+$/, '');
 }
