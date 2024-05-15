@@ -2,6 +2,7 @@
 docs
 assets
 .github
+gh-pages
 Makefile
 CHANGELOG.md
 .gitattributes
