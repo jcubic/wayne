@@ -19,7 +19,7 @@ exports.Wayne = void 0;
 exports.rpc = rpc;
 exports.send = send;
 /*
- * Wayne - Server Worker Routing library (v. 0.16.2)
+ * Wayne - Server Worker Routing library (v. 0.16.3)
  *
  * Copyright (c) 2022-2024 Jakub T. Jankiewicz <https://jcubic.pl/me>
  * Released under MIT license
@@ -393,7 +393,7 @@ function FileSystem(options) {
   async function serve(res, path_name) {
     const ext = path.extname(path_name);
     const type = mime.getType(ext);
-    const data = await fs.readFile(path_name, 'utf8');
+    const data = await fs.readFile(path_name);
     res.send(data, {
       type
     });

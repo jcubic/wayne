@@ -1,3 +1,7 @@
+## 0.16.3
+### Bug fix
+* fix handling of binary data in FileSystem
+
 ## 0.16.2
 ### Bug fix
 * fix for directories that don't end with trailing slash [#33](https://github.com/jcubic/wayne/issues/33)
