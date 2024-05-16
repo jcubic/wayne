@@ -5,6 +5,8 @@
 
 [![npm](https://img.shields.io/badge/npm-0.16.3-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
+[![jSDelivr](https://data.jsdelivr.com/v1/package/npm/@jcubic/wayne/badge)](https://www.jsdelivr.com/package/npm/@jcubic/wayne)
+
 
 [Service Worker Routing library for in-browser HTTP requests](https://github.com/jcubic/wayne/)
 
