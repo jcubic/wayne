@@ -2,7 +2,7 @@ VERSION=0.16.3
 DATE=`date -uR`
 YEAR=`date +%Y`
 
-all: README.md package-lock.json index.umd.js index.umd.min.js index.min.js
+all: README.md package-lock.json index.js index.umd.js index.umd.min.js index.min.js
 
 .$(VERSION): Makefile
 	touch .$(VERSION)
@@ -22,7 +22,7 @@ index.js: .$(VERSION) Makefile
 banner.version.js: .$(VERSION) banner.js Makefile
 	sed -e "s/{{VER}}/$(VERSION)/" -e "s/\(2022\)-[0-9]\+/\1-$(YEAR)/" -e "s/{{DATE}}/$(DATE)/" banner.js > banner.version.js
 
-index.umd.js: index.js Makefile
+index.umd.js: index.js banner.version.js Makefile
 	npx browserify -e index.js -s wayne -p esmify -o tmp.js
 	cat banner.version.js tmp.js > index.umd.js
 	rm tmp.js
