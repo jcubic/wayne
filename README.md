@@ -450,6 +450,8 @@ According to the spec, the default behavior of the Service Worker is to control 
 after reloading the page. To make the SW always in control use this code in your SW:
 
 ```javascript
+// take control of uncontrolled clients on first load
+// ref: https://web.dev/service-worker-lifecycle/#clientsclaim
 self.addEventListener('activate', (event) => {
   event.waitUntil(clients.claim());
 });
