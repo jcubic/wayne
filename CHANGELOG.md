@@ -1,3 +1,7 @@
+## 0.16.4
+### Bug fix
+* fix check if request origin match
+
 ## 0.16.3
 ### Bug fix
 * fix handling of binary data in FileSystem

@@ -8,6 +8,10 @@
 const root_url = get_root_path();
 const root_url_re = new RegExp('^' + escape_re(root_url));
 
+function same_origin(origin) {
+    return origin === self.location.origin;
+}
+
 function get_root_path() {
     if (self.registration) {
         const url = new URL(registration.scope);
@@ -78,6 +82,10 @@ function bind_fs(fs) {
     }
     return result;
 }
+
+// -----------------------------------------------------------------------------
+// :: Wayne Route Response Class
+// -----------------------------------------------------------------------------
 
 export class HTTPResponse {
     constructor(resolve, reject) {
@@ -165,8 +173,12 @@ export class HTTPResponse {
     }
 }
 
-// code based on https://github.com/jcubic/route.js
-// Copyright (C) 2014-2017 Jakub T. Jankiewicz <https://jcubic.pl/me>
+
+// -----------------------------------------------------------------------------
+// :: Route Parser
+// :: code based on https://github.com/jcubic/route.js
+// :: Copyright (C) 2014-2017 Jakub T. Jankiewicz <https://jcubic.pl/me>
+// -----------------------------------------------------------------------------
 export function RouteParser() {
     const name_re = '[a-zA-Z_][a-zA-Z_0-9]*';
     const self = this;
@@ -236,12 +248,16 @@ export function RouteParser() {
         for (let i=keys.length; i--;) {
             const key = keys[i];
             let pattern;
+            // check if origin match for full URL
             if (key.match(/:\/\//)) {
                 const url = new URL(key);
                 if (url.origin !== origin) {
                     continue;
                 }
                 pattern = key.replace(url.origin, '');
+            } else if (!same_origin(origin)) {
+                // skip different origin
+                continue;
             } else {
                 pattern = key;
             }
@@ -367,6 +383,10 @@ async function list_dir({ fs, path }, path_name) {
     }));
 }
 
+// -----------------------------------------------------------------------------
+// :: File System
+// -----------------------------------------------------------------------------
+
 export function FileSystem(options) {
     let {
         path,
@@ -397,7 +417,7 @@ export function FileSystem(options) {
         const url = new URL(req.url);
         let path_name = normalize_url(decodeURIComponent(url.pathname));
         url.pathname = path_name;
-        if (!(url.hostname === self.location.hostname && await test(url))) {
+        if (!(same_origin(url.origin) && await test(url))) {
             return next();
         }
         if (req.method !== 'GET') {
@@ -438,6 +458,10 @@ export function FileSystem(options) {
         }
     };
 }
+
+// -----------------------------------------------------------------------------
+// :: Main Wayne Constructor
+// -----------------------------------------------------------------------------
 
 export class Wayne {
     constructor({ filter = () => true } = {}) {
@@ -529,6 +553,10 @@ export class Wayne {
         };
     }
 }
+
+// -----------------------------------------------------------------------------
+// :: RPC
+// -----------------------------------------------------------------------------
 
 export function rpc(channel, methods) {
     channel.addEventListener('message', async function handler(message) {
