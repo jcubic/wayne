@@ -1,6 +1,6 @@
 {
   "name": "@jcubic/wayne",
-  "version": "0.16.3",
+  "version": "0.16.4",
   "description": "Service Worker Routing for in browser HTTP requests",
   "type": "module",
   "main": "index.min.js",
