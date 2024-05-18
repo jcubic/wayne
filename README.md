@@ -110,6 +110,12 @@ importScripts('https://cdn.jsdelivr.net/npm/@jcubic/wayne/index.umd.min.js');
 const app = new wayne.Wayne();
 ```
 
+* When using bundlers like Vite:
+
+```javascript
+import { Wayne } from '@jcubic/wayne';
+```
+
 Using the library
 
 ```javascript
@@ -468,6 +474,7 @@ by [Jake Archibald](https://twitter.com/jaffathecake).
 * [Offline demo](https://jcubic.github.io/wayne/offline/).
 * [Download demo](https://jcubic.github.io/wayne/download/).
 * [Source Code Syntax highlight demo](https://jcubic.github.io/wayne/code/).
+* [Using with React and Vite](https://jcubic.github.io/react-wayne-auth/)
 
 The source code for the demos can be found
 [in the docs' directory at the gh-pages branch](https://github.com/jcubic/wayne/tree/gh-pages/docs).
