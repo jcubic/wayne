@@ -568,6 +568,7 @@ Code contributions are also welcome.
 * [Hack to Run React Application inside Service Worker](https://dev.to/jcubic/hack-to-run-react-application-inside-service-worker-4p2f)
 * [How to create Web Server in Browser](https://itnext.io/how-to-create-web-server-in-browser-ffaa371d2b53)
 * [Hack for Syntax Highlighting of Source Code](https://jakub.jankiewicz.org/blog/display-source-files-in-color/)
+* [How to Create a REST API Without a Server](https://www.freecodecamp.org/news/how-to-create-a-rest-api-without-a-server/)
 
 ## Press
 * [Architecture Weekly](https://github.com/oskardudycz/ArchitectureWeekly)
