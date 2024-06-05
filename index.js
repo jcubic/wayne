@@ -488,10 +488,21 @@ export class Wayne {
                     const routes = this._routes[method];
                     if (routes) {
                         const match = this._parser.pick(routes, path, origin);
+                        const have_wildcard = match.length > 1 && match.find(route => {
+                            return !!route.pattern.match(/\*/);
+                        });
                         if (match.length) {
-                            const [first_match] = match;
-                            const fns = [...this._middlewares, ...routes[first_match.pattern]];
-                            req.params = first_match.data;
+                            let selected_route;
+                            if (have_wildcard) {
+                                selected_route = match.find(route => {
+                                    return !route.pattern.match(/\*/);
+                                });
+                            }
+                            if (!(have_wildcard && selected_route)) {
+                                selected_route = match[0];
+                            }
+                            const fns = [...this._middlewares, ...routes[selected_route.pattern]];
+                            req.params = selected_route.data;
                             setTimeout(function() {
                                 reject('Timeout Error');
                             }, this._timeout);
@@ -504,7 +515,6 @@ export class Wayne {
                     if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') {
                         return;
                     }
-                    //request = credentials: 'include'
                     fetch(event.request).then(resolve).catch(reject);
                 } catch(error) {
                     this._handle_error(resolve, req, error);

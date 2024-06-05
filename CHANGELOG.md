@@ -1,3 +1,7 @@
+## 0.16.5
+### Bug fix
+* don't pick wildcard when other routes found [#36](https://github.com/jcubic/wayne/issues/36)
+
 ## 0.16.4
 ### Bug fix
 * fix check if request origin match
