@@ -3,7 +3,7 @@
        alt="Logo of Wayne library - it represents construction worker helmet and text with the name of the library" />
 </h1>
 
-[![npm](https://img.shields.io/badge/npm-0.16.4-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
+[![npm](https://img.shields.io/badge/npm-0.16.5-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
 [![jSDelivr](https://data.jsdelivr.com/v1/package/npm/@jcubic/wayne/badge)](https://www.jsdelivr.com/package/npm/@jcubic/wayne)
 
