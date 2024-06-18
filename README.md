@@ -369,7 +369,7 @@ inclding URLs from different origin. From version 0.15.0 Wayne allow to inrecept
 full URL instead of just path as a route:
 
 ```javascript
-app.get('https://github.com/{user}/{repo}', (req, res) => {
+app.get(`https://github.com/{user}/{repo}`, (req, res) => {
     res.text(`Sorry, you can't fetch ${req.params.user} repo named ${req.params.repo}`);
 });
 ```
@@ -396,6 +396,39 @@ const app = new Wayne({
     }
 });
 ```
+
+You can also use middleware for this
+
+```javascript
+app.use((req, res, next) => {
+    const url = new URL(req.url);
+    if (url.origin === location.origin) {
+        next();
+    } else {
+        res.fetch(req);
+    }
+});
+```
+
+### Overwrite HTML code
+
+```javascript
+app.get('*', async (req, res) => {
+  const _res = await fetch(req);
+  const type = _res.headers.get('Content-Type');
+  let response;
+  if (type.match(/text\/html/i)) {
+      const html = await _res.text();
+      response = html.replace(/<\/body>/, '<p>Patched by Wayne<p></body>');
+  } else {
+      response = await _res.arrayBuffer();
+  }
+  res.send(response, { type });
+});
+```
+
+This code will intercept every page and if it's HTML it will add HTML code at the end (before
+closing body tag).
 
 ### Using with ES Modules
 You can intercept the import of ES Module with Wayne. Here is example:
