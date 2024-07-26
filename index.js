@@ -185,6 +185,7 @@ export function RouteParser() {
     const open_tag = '{';
     const close_tag = '}';
     const glob = '*';
+    const glob_re = '(.*?)';
     const number = '\\d';
     const optional = '?';
     const open_group = '(';
@@ -215,7 +216,7 @@ export function RouteParser() {
                     return chunk;
                 } else if (chunk === glob) {
                     result.push(index++);
-                    return '(.*?)';
+                    return glob_re;
                 } else if (chunk.match(tag_re)) {
                     result.push(chunk.replace(clear_re, '$1'));
                     return '([^\\/]+)';
@@ -249,12 +250,23 @@ export function RouteParser() {
             const key = keys[i];
             let pattern;
             // check if origin match for full URL
-            if (key.match(/:\/\//)) {
-                const url = new URL(key);
-                if (url.origin !== origin) {
-                    continue;
+            const re = /:\/\/([^\/]+)(\/.*)/;
+            let m = key.match(re);
+            if (m) {
+                const key_origin = m[1];
+                // glob
+                if (key_origin.match(/\*/)) {
+                    const re = new RegExp(key_origin.replace(/\*/g, glob_re));
+                    if (!origin.match(re)) {
+                        continue;
+                    }
+                } else {
+                    const url = new URL(key);
+                    if (url.origin !== origin) {
+                        continue;
+                    }
                 }
-                pattern = key.replace(url.origin, '');
+                pattern = m[2];
             } else if (!same_origin(origin)) {
                 // skip different origin
                 continue;
@@ -262,7 +274,7 @@ export function RouteParser() {
                 pattern = key;
             }
             const parts = parse(pattern);
-            const m = url.match(new RegExp('^' + parts.re + '$'));
+            m = url.match(new RegExp('^' + parts.re + '$'));
             if (m) {
                 const matched = m.slice(1);
                 const data = {};

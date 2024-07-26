@@ -4,7 +4,7 @@
  * Copyright (c) 2022-2024 Jakub T. Jankiewicz <https://jcubic.pl/me>
  * Released under MIT license
  *
- * Thu, 06 Jun 2024 16:55:58 +0000
+ * Fri, 26 Jul 2024 23:45:38 +0000
  */
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.wayne = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
@@ -215,6 +215,7 @@ function RouteParser() {
   const open_tag = '{';
   const close_tag = '}';
   const glob = '*';
+  const glob_re = '(.*?)';
   const number = '\\d';
   const optional = '?';
   const open_group = '(';
@@ -240,7 +241,7 @@ function RouteParser() {
           return chunk;
         } else if (chunk === glob) {
           result.push(index++);
-          return '(.*?)';
+          return glob_re;
         } else if (chunk.match(tag_re)) {
           result.push(chunk.replace(clear_re, '$1'));
           return '([^\\/]+)';
@@ -277,12 +278,23 @@ function RouteParser() {
       const key = keys[i];
       let pattern;
       // check if origin match for full URL
-      if (key.match(/:\/\//)) {
-        const url = new URL(key);
-        if (url.origin !== origin) {
-          continue;
+      const re = /:\/\/([^\/]+)(\/.*)/;
+      let m = key.match(re);
+      if (m) {
+        const key_origin = m[1];
+        // glob
+        if (key_origin.match(/\*/)) {
+          const re = new RegExp(key_origin.replace(/\*/g, glob_re));
+          if (!origin.match(re)) {
+            continue;
+          }
+        } else {
+          const url = new URL(key);
+          if (url.origin !== origin) {
+            continue;
+          }
         }
-        pattern = key.replace(url.origin, '');
+        pattern = m[2];
       } else if (!same_origin(origin)) {
         // skip different origin
         continue;
@@ -290,7 +302,7 @@ function RouteParser() {
         pattern = key;
       }
       const parts = parse(pattern);
-      const m = url.match(new RegExp('^' + parts.re + '$'));
+      m = url.match(new RegExp('^' + parts.re + '$'));
       if (m) {
         const matched = m.slice(1);
         const data = {};
