@@ -248,6 +248,7 @@ export function RouteParser() {
         const results = [];
         for (let i=keys.length; i--;) {
             const key = keys[i];
+            const route = input[key];
             let pattern;
             // check if origin match for full URL
             const re = /:\/\/([^\/]+)(\/.*)/;
@@ -274,20 +275,24 @@ export function RouteParser() {
                 pattern = key;
             }
             const parts = parse(pattern);
-            m = url.match(new RegExp('^' + parts.re + '$'));
-            if (m) {
-                const matched = m.slice(1);
-                const data = {};
-                if (matched.length) {
-                    parts.names.forEach((name, i) => {
-                        data[name] = matched[i];
+            route.forEach(({ handler, options }) => {
+                const caseSensitive = options.caseSensitive ?? true;
+                m = url.match(new RegExp('^' + parts.re + '$', caseSensitive ? '' : 'i'));
+                if (m) {
+                    const matched = m.slice(1);
+                    const data = {};
+                    if (matched.length) {
+                        parts.names.forEach((name, i) => {
+                            data[name] = matched[i];
+                        });
+                    }
+                    results.push({
+                        pattern: key,
+                        handler,
+                        data
                     });
                 }
-                results.push({
-                    pattern: key,
-                    data
-                });
-            }
+            });
         }
         return results;
     };
@@ -470,6 +475,17 @@ export function FileSystem(options) {
         }
     };
 }
+// -----------------------------------------------------------------------------
+function pluck(name) {
+    return function(object) {
+        return object[name];
+    };
+}
+
+// -----------------------------------------------------------------------------
+function handlers(arr) {
+    return arr.map(pluck('handler'));
+}
 
 // -----------------------------------------------------------------------------
 // :: Main Wayne Constructor
@@ -513,7 +529,7 @@ export class Wayne {
                             if (!(have_wildcard && selected_route)) {
                                 selected_route = match[0];
                             }
-                            const fns = [...this._middlewares, ...routes[selected_route.pattern]];
+                            const fns = [...this._middlewares, ...handlers(match)];
                             req.params = selected_route.data;
                             setTimeout(function() {
                                 reject('Timeout Error');
@@ -562,7 +578,7 @@ export class Wayne {
         });
     }
     method(method) {
-        return function(url, fn) {
+        return function(url, handler, options = {}) {
             if (!this._routes[method]) {
                 this._routes[method] = {};
             }
@@ -570,7 +586,7 @@ export class Wayne {
             if (!routes[url]) {
                 routes[url] = [];
             }
-            routes[url].push(fn);
+            routes[url].push({ handler, options });
             return this;
         };
     }

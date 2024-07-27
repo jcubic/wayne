@@ -1,6 +1,7 @@
 ## 0.17.0
 ### Features
 * allow using glob as domain name
+* add `caseSenstive` options to routes [#38](https://github.com/jcubic/wayne/issues/38)
 
 ## 0.16.5
 ### Bug fix
