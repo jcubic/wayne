@@ -146,6 +146,10 @@ app.get('/message', function(req, res) {
   res.text('Lorem Ipsum');
 });
 
+app.get('/404', function(req, res) {
+    res.text('Not Found', { status: 404, statusText: 'Not Found' });
+});
+
 app.get('/external', function(req, res) {
   // lorem ipsum API
   res.redirect('https://api.buildable.dev/@62d55492951509001abc363e/live/lorem-ipsum');
