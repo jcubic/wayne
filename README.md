@@ -325,6 +325,12 @@ function random_request() {
 }
 ```
 
+> [!WARNING]
+> Above code will only work when main page is open, so you can't navigate away. It may freeze the browser,
+> becasue it will not able to find other side of the BroadcastChannel. If you want so send data persistently,
+> it's better to use IndexedDB to share data between main thread and Service Worker. You can use library like
+> [idb-keyval](https://github.com/jakearchibald/idb-keyval) by Jake Archibald.
+
 ### Server-Sent Events
 
 [Server-Sent Events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events)
