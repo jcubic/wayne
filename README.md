@@ -420,6 +420,42 @@ app.use((req, res, next) => {
 });
 ```
 
+With middleware you can also intercept all requests to remote servers and block those that are not
+on the list:
+
+```javascript
+function is_chrome_extension(url) {
+  return url.match(/chrome-extension:/);
+}
+
+function is_valid_request(url) {
+  if (is_chrome_extension(url)) {
+    return true;
+  }
+  const valid_hosts = ['localhost', 'cdn.jsdelivr.net'];
+  const host = new URL(url).host;
+
+  return valid_hosts.includes(host);
+}
+
+app.use((req, res, next) => {
+    const url = new URL(req.url);
+    if (url.origin === location.origin) {
+        next();
+    } else {
+        if (is_valid_request(req.url)) {
+          res.fetch(req);
+        } else {
+          res.html(`<!DOCTYPE HTML><html><body><h1>This request is blocked</h1></body></html>`, { status: 403 });
+        }
+    }
+});
+```
+
+If you want to set the valid URLS in your main script, you can save them in indexedDB. As with
+filesystem, you can use [idb-keyval](https://github.com/jakearchibald/idb-keyval) by Jake Archibald,
+for this.
+
 ### Overwrite HTML code
 
 ```javascript
