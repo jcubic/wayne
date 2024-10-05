@@ -27,6 +27,10 @@
     "server-sent-events"
   ],
   "author": "Jakub T. Jankiewicz <jcubic@onet.pl> (https://jcubic.pl/me/)",
+  "bugs": {
+    "url": "https://github.com/jcubic/wayne/issues"
+  },
+  "homepage": "https://github.com/jcubic/wayne",
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.19.0",
