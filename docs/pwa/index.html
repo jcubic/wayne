@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>PWA</title>
+    <meta name="Description" content=""/>
+    <link rel="shortcut icon" href=""/>
+    <link href="./style.css" rel="stylesheet"/>
+    <script>
+     if ('serviceWorker' in navigator) {
+         var scope = location.pathname.replace(/\/[^\/]+$/, '/');
+         navigator.serviceWorker.register('sw.js', { scope })
+                  .then(function(reg) {
+                      reg.addEventListener('updatefound', function() {
+                          var installingWorker = reg.installing;
+                          console.log('A new service worker is being installed:',
+                                      installingWorker);
+                      });
+                      // registration worked
+                      console.log('Registration succeeded. Scope is ' + reg.scope);
+                  }).catch(function(error) {
+                      // registration failed
+                      console.log('Registration failed with ' + error);
+                  });
+     }
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body>
+  <h1>PWA/Cache Wayne Demo</h1>
+  <button id="button">load iframe</button>
+  <br/>
+  <iframe id="iframe"></iframe>
+  <script>
+  let count = 0;
+  button.addEventListener('click', () => {
+    iframe.src = `./foo?nocache=${count++}`;
+  });
+  </script>
+</body>
+</html>
