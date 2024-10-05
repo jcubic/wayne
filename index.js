@@ -1,5 +1,5 @@
 /*
- * Wayne - Server Worker Routing library (v. 0.17.0)
+ * Wayne - Server Worker Routing library (v. 0.18.0)
  *
  * Copyright (c) 2022-2024 Jakub T. Jankiewicz <https://jcubic.pl/me>
  * Released under MIT license
@@ -100,6 +100,9 @@ export class HTTPResponse {
     }
     json(data, init) {
         this.send(JSON.stringify(data), { type: 'application/json', ...init });
+    }
+    respond(response) {
+        this._resolve(response);
     }
     blob(blob, init = {}) {
         this._resolve(new Response(blob, init));

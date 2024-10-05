@@ -3,7 +3,7 @@
        alt="Logo of Wayne library - it represents construction worker helmet and text with the name of the library" />
 </h1>
 
-[![npm](https://img.shields.io/badge/npm-0.17.0-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
+[![npm](https://img.shields.io/badge/npm-0.18.0-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
 [![jSDelivr](https://data.jsdelivr.com/v1/package/npm/@jcubic/wayne/badge)](https://www.jsdelivr.com/package/npm/@jcubic/wayne)
 
@@ -528,6 +528,59 @@ import require$$0 from"/npm/jquery@3.7.1/+esm"
 And needs to be imported from jsDelivr, the same if you import CSS file.
 See [example of loading jQuery Terminal](https://jcubic.github.io/wayne/esm/) where this code is used.
 
+### PWA
+
+To use with PWA and cache you need to use a custom middleware:
+
+```javascript
+const app = new Wayne();
+
+app.use(async (req, res, next) => {
+    const url = new URL(req.url);
+
+    const cache = await get_cache();
+    const cache_response = await cache.match(req);
+
+    if (cache_response) {
+        if (navigator.onLine) {
+            const net_response = await fetch(req);
+            cache.put(req, net_response.clone());
+            res.respond(net_response);
+        } else {
+            res.respond(cache_response);
+        }
+    } else {
+       next();
+    }
+});
+
+const cache_url = [
+  '/',
+  'https://cdn.jsdelivr.net/npm/@jcubic/wayne/index.umd.min.js',
+  'https://cdn.jsdelivr.net/npm/idb-keyval@6/dist/umd.js'
+];
+
+self.addEventListener('install', (event) => {
+   event.waitUntil(cache_all());
+});
+
+function get_cache() {
+    return caches.open('pwa-assets');
+}
+
+async function cache_all() {
+    const cache = await get_cache();
+    return cache.addAll(cache_url);
+}
+```
+
+This approach is recommended by the answer to this StackOverflow question:
+
+* [Service-worker force update of new assets](https://stackoverflow.com/a/33266296/387194)
+
+It always fetch a new value of the assets when there is internet connection and serve cached value
+when user is offline. When there are no cached value it do default action (which can be normal
+fetch outside of cache or Wayne route).
 
 ## First load
 
@@ -554,6 +607,7 @@ by [Jake Archibald](https://twitter.com/jaffathecake).
 * [Download demo](https://jcubic.github.io/wayne/download/).
 * [Source Code Syntax highlight demo](https://jcubic.github.io/wayne/code/).
 * [Using with React and Vite](https://jcubic.github.io/react-wayne-auth/)
+* [PWA/Cache](https://jcubic.github.io/wayne/pwa/)
 
 The source code for the demos can be found
 [in the docs' directory at the gh-pages branch](https://github.com/jcubic/wayne/tree/gh-pages/docs).
@@ -604,6 +658,7 @@ each of those methods accepts string as the first argument. The second argument 
 
 Additional methods:
 * `redirect()` - accept URL or optional first argument that is the number of HTTP code
+* `respond(res)` - accept Response object in case you want to use a different [Response object](https://developer.mozilla.org/en-US/docs/Web/API/Response).
 * `sse([options])` - function creates Server-Sent Event stream, the return object has a method `send` that sends a new event.
 * `fetch(url | Request)` - method will send a normal HTTP request to the server and return the result to the client. You can use the default Request object from the route.
 * `download(data, { filename })` - a method that can be used to trigger file download. The data can be a `string` or `arrayBuffer` you can use native fetch API and call `await res.text()` or `await res.arrayBuffer()` and pass the result as data.

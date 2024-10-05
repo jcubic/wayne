@@ -1,3 +1,7 @@
+## 0.18.0
+### Features
+* add public method `respond` where you can use your own `Response` object
+
 ## 0.17.0
 ### Features
 * allow using glob as domain name
