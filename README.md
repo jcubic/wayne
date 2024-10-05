@@ -555,9 +555,8 @@ app.use(async (req, res, next) => {
 });
 
 const cache_url = [
-  '/',
-  'https://cdn.jsdelivr.net/npm/@jcubic/wayne/index.umd.min.js',
-  'https://cdn.jsdelivr.net/npm/idb-keyval@6/dist/umd.js'
+  '/'
+  /* add any files you want to cache here */
 ];
 
 self.addEventListener('install', (event) => {
