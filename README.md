@@ -330,6 +330,9 @@ function random_request() {
 > becasue it will not able to find other side of the BroadcastChannel. If you want to send data persistently,
 > it's better to use IndexedDB to share data between main thread and Service Worker. You can use library like
 > [idb-keyval](https://github.com/jakearchibald/idb-keyval) by Jake Archibald for this.
+> 
+> But it will work when you use RPC with fetch (like in above example) that originate from the same page
+> that create the channel.
 
 ### Server-Sent Events
 
