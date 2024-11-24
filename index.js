@@ -40,7 +40,7 @@ function is_promise(arg) {
 }
 
 // taken from Isomorphic-git MIT license
-function isPromiseFs(fs) {
+function is_promise_fs(fs) {
     const test = targetFs => {
         try {
             // If readFile returns a promise then we can probably assume the other
@@ -61,7 +61,7 @@ const commands = [
 
 function bind_fs(fs) {
     const result = {};
-    if (isPromiseFs(fs)) {
+    if (is_promise_fs(fs)) {
         for (const command of commands) {
             result[command] = fs[command].bind(fs);
         }
