@@ -413,9 +413,48 @@ async function list_dir({ fs, path }, path_name) {
 }
 
 // -----------------------------------------------------------------------------
+// :: Write FS into browser cache
+// -----------------------------------------------------------------------------
+async function make_dir_response({ fs, path }, dir = '/', prefix, list) {
+    const [html, init] = make_dir(prefix, dir, list);
+    const blob = new Blob([html], { type: 'text/html' });
+    return new Response(blob, init);
+}
+
+export async function travese_cache({ cache, fs, path, mime }, dir = '/', prefix = '') {
+    const entries = await list_dir({ fs, path }, dir);
+    const response = await make_dir_response({ fs, path }, dir, prefix, entries);
+    await cache.put(`${prefix}${dir}`, response);
+
+    for (const entry of entries) {
+        const full_path = path.join(dir, entry);
+
+        if (entry.endsWith('/')) {
+            await travese_cache({ cache, fs, path, mime }, full_path, prefix);
+        } else {
+            const file_contents = await fs.readFile(full_path);
+            const content_type = mime.getType(entry);
+
+            const response = new Response(file_contents, {
+                headers: { 'Content-Type': content_type },
+            });
+
+            await cache.put(`${prefix}${full_path}`, response);
+        }
+    }
+}
+
+export async function make_cache({ fs, path, mime, dir = '/', prefix, cache: cache_name = '__wayne__' } = {}) {
+    if (!caches) {
+        throw new Error('Cache API is not available in this environment');
+    }
+    const cache = await caches.open(cache_name);
+    return travese_cache({ cache, fs, path, mime }, dir, prefix);
+}
+
+// -----------------------------------------------------------------------------
 // :: File System
 // -----------------------------------------------------------------------------
-
 export function FileSystem(options) {
     let {
         path,
@@ -423,6 +462,7 @@ export function FileSystem(options) {
         test,
         dir = () => '/',
         fs,
+        cache = null,
         mime,
         default_file = 'index.html'
     } = options;
@@ -441,9 +481,13 @@ export function FileSystem(options) {
         const data = await fs.readFile(path_name);
         res.send(data, { type });
     }
+    if (cache) {
+        cache = caches.open(cache);
+    }
+    let real_cache;
     return async function(req, res, next) {
-        const method = req.method;
         const url = new URL(req.url);
+        const method = req.method;
         let path_name = normalize_url(decodeURIComponent(url.pathname));
         url.pathname = path_name;
         if (!(same_origin(url.origin) && await test(url))) {
@@ -459,6 +503,18 @@ export function FileSystem(options) {
             path_name = '/';
         }
         path_name = path.join(await dir(), path_name);
+        if (cache) {
+            real_cache ??= await cache;
+            // putting prefix + path in cache creates a full URL as key
+            const full_url = path.join(root_url, url.pathname);
+            const cache_response = await real_cache.match(full_url);
+            if (cache_response) {
+                res.respond(cache_response);
+            } else {
+                res.html(...error_404(path_name));
+            }
+            return;
+        }
         try {
             const stat = await fs.stat(path_name);
 

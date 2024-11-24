@@ -4,7 +4,7 @@
  * Copyright (c) 2022-2024 Jakub T. Jankiewicz <https://jcubic.pl/me>
  * Released under MIT license
  *
- * Sat, 05 Oct 2024 17:53:52 +0000
+ * Sun, 24 Nov 2024 18:44:18 +0000
  */
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.wayne = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
@@ -16,8 +16,10 @@ exports.FileSystem = FileSystem;
 exports.HTTPResponse = void 0;
 exports.RouteParser = RouteParser;
 exports.Wayne = void 0;
+exports.make_cache = make_cache;
 exports.rpc = rpc;
 exports.send = send;
+exports.travese_cache = travese_cache;
 /*
  * Wayne - Server Worker Routing library (v. 0.18.3)
  *
@@ -54,7 +56,7 @@ function is_promise(arg) {
 }
 
 // taken from Isomorphic-git MIT license
-function isPromiseFs(fs) {
+function is_promise_fs(fs) {
   const test = targetFs => {
     try {
       // If readFile returns a promise then we can probably assume the other
@@ -70,7 +72,7 @@ function isPromiseFs(fs) {
 const commands = ['stat', 'readdir', 'readFile'];
 function bind_fs(fs) {
   const result = {};
-  if (isPromiseFs(fs)) {
+  if (is_promise_fs(fs)) {
     for (const command of commands) {
       result[command] = fs[command].bind(fs);
     }
@@ -180,7 +182,7 @@ class HTTPResponse {
       start: controller => {
         send = function (event) {
           if (!defunct) {
-            const chunk = createChunk(event);
+            const chunk = create_chunk(event);
             const payload = new TextEncoder().encode(chunk);
             controller.enqueue(payload);
           }
@@ -334,30 +336,41 @@ function RouteParser() {
 function html(content) {
   return ['<!DOCTYPE html>', '<html>', '<head>', '<meta charset="UTF-8">', '<title>Wayne Service Worker</title>', '</head>', '<body>', ...content, '</body>', '</html>'].join('\n');
 }
-function error500(error) {
+function error_500(error) {
   var output = html(['<h1>Wayne: 500 Server Error</h1>', '<p>Service worker give 500 error</p>', `<p>${error.message || error}</p>`, `<pre>${error.stack || ''}</pre>`]);
   return [output, {
     status: 500,
     statusText: '500 Server Error'
   }];
 }
-function dir(prefix, path, list) {
-  var output = html(['<h1>Wayne</h1>', `<p>Content of ${path}</p>`, '<ul>', ...list.map(name => {
+function make_dir(prefix, path, list) {
+  var output = html(['<h1>Wayne FS</h1>', `<p>Content of ${path}</p>`, '<ul>', ...list.map(name => {
     return `<li><a href="${root_url}${prefix}${path}${name}">${name}</a></li>`;
   }), '</ul>']);
   return [output, {
-    status: 404,
-    statusText: '404 Page Not Found'
+    status: 200,
+    statusText: 'Ok'
   }];
 }
-function error404(path) {
+function error_404(path) {
   var output = html(['<h1>Wayne: 404 File Not Found</h1>', `<p>File ${path} not found`]);
   return [output, {
     status: 404,
     statusText: '404 Page Not Found'
   }];
 }
-function createChunk({
+async function file_exists({
+  fs,
+  file_path
+}) {
+  try {
+    await fs.stat(file_path);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+function create_chunk({
   data,
   event,
   retry,
@@ -412,9 +425,77 @@ async function list_dir({
 }
 
 // -----------------------------------------------------------------------------
+// :: Write FS into browser cache
+// -----------------------------------------------------------------------------
+async function make_dir_response({
+  fs,
+  path
+}, dir = '/', prefix, list) {
+  const [html, init] = make_dir(prefix, dir, list);
+  const blob = new Blob([html], {
+    type: 'text/html'
+  });
+  return new Response(blob, init);
+}
+async function travese_cache({
+  cache,
+  fs,
+  path,
+  mime
+}, dir = '/', prefix = '') {
+  const entries = await list_dir({
+    fs,
+    path
+  }, dir);
+  const response = await make_dir_response({
+    fs,
+    path
+  }, dir, prefix, entries);
+  await cache.put(`${prefix}${dir}`, response);
+  for (const entry of entries) {
+    const full_path = path.join(dir, entry);
+    if (entry.endsWith('/')) {
+      await travese_cache({
+        cache,
+        fs,
+        path,
+        mime
+      }, full_path, prefix);
+    } else {
+      const file_contents = await fs.readFile(full_path);
+      const content_type = mime.getType(entry);
+      const response = new Response(file_contents, {
+        headers: {
+          'Content-Type': content_type
+        }
+      });
+      await cache.put(`${prefix}${full_path}`, response);
+    }
+  }
+}
+async function make_cache({
+  fs,
+  path,
+  mime,
+  dir = '/',
+  prefix,
+  cache: cache_name = '__wayne__'
+} = {}) {
+  if (!caches) {
+    throw new Error('Cache API is not available in this environment');
+  }
+  const cache = await caches.open(cache_name);
+  return travese_cache({
+    cache,
+    fs,
+    path,
+    mime
+  }, dir, prefix);
+}
+
+// -----------------------------------------------------------------------------
 // :: File System
 // -----------------------------------------------------------------------------
-
 function FileSystem(options) {
   let {
     path,
@@ -422,6 +503,7 @@ function FileSystem(options) {
     test,
     dir = () => '/',
     fs,
+    cache = null,
     mime,
     default_file = 'index.html'
   } = options;
@@ -441,9 +523,13 @@ function FileSystem(options) {
       type
     });
   }
+  if (cache) {
+    cache = caches.open(cache);
+  }
+  let real_cache;
   return async function (req, res, next) {
-    const method = req.method;
     const url = new URL(req.url);
+    const method = req.method;
     let path_name = normalize_url(decodeURIComponent(url.pathname));
     url.pathname = path_name;
     if (!(same_origin(url.origin) && (await test(url)))) {
@@ -461,28 +547,43 @@ function FileSystem(options) {
       path_name = '/';
     }
     path_name = path.join(await dir(), path_name);
+    if (cache) {
+      real_cache ??= await cache;
+      // putting prefix + path in cache creates a full URL as key
+      const full_url = path.join(root_url, url.pathname);
+      const cache_response = await real_cache.match(full_url);
+      if (cache_response) {
+        res.respond(cache_response);
+      } else {
+        res.html(...error_404(path_name));
+      }
+      return;
+    }
     try {
       const stat = await fs.stat(path_name);
       if (stat.isFile()) {
         await serve(res, path_name);
       } else if (stat.isDirectory()) {
-        const default_path = path.join(path_name, default_file);
-        const stat = await fs.stat(default_path);
-        if (stat.isFile()) {
+        const file_path = path.join(path_name, default_file);
+        if (await file_exists({
+          fs,
+          file_path
+        })) {
           await serve(res, default_path);
         } else {
-          res.html(...dir(prefix, path_name, await list_dir({
+          const payload = make_dir(prefix, path_name, await list_dir({
             fs,
             path
-          }, path_name)));
+          }, path_name));
+          res.html(...payload);
         }
       }
     } catch (e) {
       console.log(e.stack);
       if (typeof stat === 'undefined') {
-        res.html(...error404(path_name));
+        res.html(...error_404(path_name));
       } else {
-        res.html(...error500(error));
+        res.html(...error_500(error));
       }
     }
   };
@@ -574,10 +675,10 @@ class Wayne {
       chain_handlers(this._er_handlers, function (handler, next) {
         handler(error, req, res, next);
       }, function (error) {
-        res.html(...error500(error));
+        res.html(...error_500(error));
       });
     } else {
-      res.html(...error500(error));
+      res.html(...error_500(error));
     }
   }
   use(...fns) {

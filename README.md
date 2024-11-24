@@ -223,7 +223,6 @@ e.g. using [idb-keyval](https://github.com/jakearchibald/idb-keyval) by Jake Arc
 A patch in 0.14.3 allow putting interceptors to inject something into output HTML from FileSystem
 middleware. You do this by adding middleware before FileSystem and patch `res.send` method:
 
-
 ```javascript
 function fs_interecept(callback) {
     return function(req, res, next) {
@@ -247,6 +246,24 @@ app.use(fs_interecept(function(html) {
 You should use the same `test` function to make sure that you patch only those requests that came
 from FS.
 
+#### Serving files from Cache
+
+Since version 0.19.0 you can use Cache instead of indexedDB to serve the file from Service Worker.
+You still need file system on main thread to save the files, but then you can use:
+
+```javascript
+wayne.make_cache({ fs, path, mime, dir: '/', prefix: '__fs__', cache: '__wayne__' });
+```
+
+This function will cache all requests from filesystem, so you can use in service worker:
+
+```javascript
+const app = new Wayne();
+
+app.use(FileSystem({ path, prefix: '__fs__', cache: '__wayne__' }));
+```
+
+Only path is required in service worker. Parameters `cache` and `prefix` needs to be the same on both calls.
 
 ### [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call) mechanism
 

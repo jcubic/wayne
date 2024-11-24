@@ -1,3 +1,9 @@
+## 0.19.0
+### Features
+* allow to use Browser Cache for serving files from FS
+### Bug fix
+* fix serving directories with listing from FS
+
 ## 0.18.0
 ### Features
 * add public method `respond` where you can use your own `Response` object
