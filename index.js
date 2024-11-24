@@ -150,7 +150,7 @@ export class HTTPResponse {
             start: controller => {
                 send = function(event) {
                     if (!defunct) {
-                        const chunk = createChunk(event);
+                        const chunk = create_chunk(event);
                         const payload = new TextEncoder().encode(chunk);
                         controller.enqueue(payload);
                     }
@@ -316,7 +316,7 @@ function html(content) {
     ].join('\n');
 }
 
-function error500(error) {
+function error_500(error) {
     var output = html([
         '<h1>Wayne: 500 Server Error</h1>',
         '<p>Service worker give 500 error</p>',
@@ -329,9 +329,9 @@ function error500(error) {
     }];
 }
 
-function dir(prefix, path, list) {
+function make_dir(prefix, path, list) {
     var output = html([
-        '<h1>Wayne</h1>',
+        '<h1>Wayne FS</h1>',
         `<p>Content of ${path}</p>`,
         '<ul>',
         ...list.map(name => {
@@ -340,12 +340,12 @@ function dir(prefix, path, list) {
         '</ul>'
     ]);
     return [output, {
-        status: 404,
-        statusText: '404 Page Not Found'
+        status: 200,
+        statusText: 'Ok'
     }];
 }
 
-function error404(path) {
+function error_404(path) {
     var output = html([
         '<h1>Wayne: 404 File Not Found</h1>',
         `<p>File ${path} not found`
@@ -356,7 +356,16 @@ function error404(path) {
     }];
 }
 
-function createChunk({ data, event, retry, id }) {
+async function file_exists({ fs, file_path }) {
+    try {
+        await fs.stat(file_path);
+        return true;
+    } catch(e) {
+        return false;
+    }
+}
+
+function create_chunk({ data, event, retry, id }) {
     return Object.entries({ event, id, data, retry })
         .filter(([, value]) => value)
         .map(([key, value]) => `${key}: ${value}`)
@@ -456,24 +465,24 @@ export function FileSystem(options) {
             if (stat.isFile()) {
                 await serve(res, path_name);
             } else if (stat.isDirectory()) {
-                const default_path = path.join(path_name, default_file)
-                const stat = await fs.stat(default_path);
-                if (stat.isFile()) {
+                const file_path = path.join(path_name, default_file);
+                if (await file_exists({ fs, file_path })) {
                     await serve(res, default_path);
                 } else {
-                    res.html(...dir(
+                    const payload = make_dir(
                         prefix,
                         path_name,
                         await list_dir({ fs, path }, path_name)
-                    ));
+                    )
+                    res.html(...payload);
                 }
             }
         } catch(e) {
             console.log(e.stack);
             if (typeof stat === 'undefined') {
-                res.html(...error404(path_name));
+                res.html(...error_404(path_name));
             } else {
-                res.html(...error500(error));
+                res.html(...error_500(error));
             }
         }
     };
@@ -563,10 +572,10 @@ export class Wayne {
             chain_handlers(this._er_handlers, function(handler, next) {
                 handler(error, req, res, next);
             }, function(error) {
-                res.html(...error500(error));
+                res.html(...error_500(error));
             });
         } else {
-            res.html(...error500(error));
+            res.html(...error_500(error));
         }
     }
     use(...fns) {
