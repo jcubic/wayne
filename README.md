@@ -3,7 +3,7 @@
        alt="Logo of Wayne library - it represents construction worker helmet and text with the name of the library" />
 </h1>
 
-[![npm](https://img.shields.io/badge/npm-0.19.0-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
+[![npm](https://img.shields.io/badge/npm-0.19.1-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
 [![jSDelivr](https://data.jsdelivr.com/v1/package/npm/@jcubic/wayne/badge)](https://www.jsdelivr.com/package/npm/@jcubic/wayne)
 
@@ -739,4 +739,4 @@ Code contributions are also welcome.
 ## License
 
 Released with [MIT](http://opensource.org/licenses/MIT) license<br/>
-Copyright (c) 2022-2024 [Jakub T. Jankiewicz](https://jcubic.pl/me)
+Copyright (c) 2022-2025 [Jakub T. Jankiewicz](https://jcubic.pl/me)
