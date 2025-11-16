@@ -8,7 +8,7 @@
 [![jSDelivr](https://data.jsdelivr.com/v1/package/npm/@jcubic/wayne/badge)](https://www.jsdelivr.com/package/npm/@jcubic/wayne)
 
 
-[Service Worker Routing library for in-browser HTTP requests](https://github.com/jcubic/wayne/)
+[Wayne: Open Source Service Worker Routing library for in-browser HTTP requests](https://github.com/jcubic/wayne/)
 
 It's like an Express inside Service Worker.
 
