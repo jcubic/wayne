@@ -30,6 +30,9 @@
   "bugs": {
     "url": "https://github.com/jcubic/wayne/issues"
   },
+  "repository": {
+    "url": "https://github.com/jcubic/wayne"
+  },
   "homepage": "https://github.com/jcubic/wayne",
   "license": "MIT",
   "devDependencies": {
