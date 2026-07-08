@@ -1,3 +1,7 @@
+## 0.20.0
+### Feature
+* add `Wayne::force()` to handle service worker waiting
+
 ## 0.19.1
 ### Bug fix
 * fix uncaught exception when fetching return error becasue of AdBlocker
