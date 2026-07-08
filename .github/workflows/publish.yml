@@ -1,0 +1,32 @@
+name: Publish to npm
+
+# Publish when a GitHub Release is published (a release is always attached to a
+# tag). Draft releases don't fire this; only publishing does.
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  id-token: write # required for npm trusted publishing (OIDC) + provenance
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      # Trusted publishing needs npm >= 11.5.1, newer than the npm bundled with
+      # Node 24. No NODE_AUTH_TOKEN / NPM_TOKEN is set — auth is via OIDC.
+      - name: Update npm
+        run: npm install -g npm@latest
+
+      # No build or test step exists, and `npm publish` doesn't need the deps
+      # installed, so we skip `npm ci` to avoid downloading Chromium for nothing.
+      - name: Publish
+        run: npm publish
