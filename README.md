@@ -8,6 +8,8 @@
 [![npm](https://img.shields.io/badge/npm-0.20.0-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
 [![jSDelivr](https://data.jsdelivr.com/v1/package/npm/@jcubic/wayne/badge)](https://www.jsdelivr.com/package/npm/@jcubic/wayne)
+[![github repo](https://img.shields.io/badge/github-repo-orange?logo=github)](https://github.com/jcubic/wayne)
+[![LICENSE MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/jcubic/eleventy-plugin-svg-social-card/blob/master/LICENSE)
 
 </div>
 
@@ -15,7 +17,7 @@
 
 It's like an Express inside Service Worker.
 
-Most of the time Service Worker is used for caching HTTP requests and making the app work when there
+Most of the time, Service Worker is used for caching HTTP requests and making the app work when there
 is no internet (mostly for [PWA](https://en.wikipedia.org/wiki/Progressive_web_application)), but in
 fact, you can create completely new responses to requests that never leave the browser. This library
 makes that easier by adding a simple API similar to Express.
@@ -53,7 +55,7 @@ if ('serviceWorker' in navigator) {
 }
 ```
 
-If you want to support browsers that don't support ES Modules in Service Worker use this instead:
+If you want to support browsers that don't support ES Modules in Service Worker, use this instead:
 
 ```javascript
 if ('serviceWorker' in navigator) {
@@ -74,7 +76,7 @@ if ('serviceWorker' in navigator) {
 }
 ```
 
-Inside the same file you can send [AJAX](https://en.wikipedia.org/wiki/Ajax_(programming)) requests with standard
+Inside the same file, you can send [AJAX](https://en.wikipedia.org/wiki/Ajax_(programming)) requests with the standard
 [fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).
 
 ```javascript
@@ -159,10 +161,10 @@ app.get('/external', function(req, res) {
 });
 ```
 
-### First load
+### First Load
 
 According to the spec, the default behavior of the Service Worker is to control the HTTP requests
-after reloading the page. To make the SW always in control use this code in your SW:
+after reloading the page. To make the SW always in control, use this code in your SW:
 
 ```javascript
 // take control of uncontrolled clients on first load
@@ -170,11 +172,18 @@ after reloading the page. To make the SW always in control use this code in your
 self.addEventListener('activate', (event) => {
   event.waitUntil(clients.claim());
 });
+```
+
+To make the script update when the worker file changes (instead of waiting for
+all all tabs to be closed), you can use this code.
+
+```javascript
 // don't wait for client when worker changes
 self.addEventListener('install', (event) => {
    self.skipWaiting();
 });
 ```
+
 > [!NOTE]
 > In version 0.20.0 you can use `app.force();` to run both.
 
