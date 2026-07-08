@@ -1,3 +1,4 @@
 banner.version.js
 *~
 .[0-9]*
+node_modules
