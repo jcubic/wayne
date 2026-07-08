@@ -9,11 +9,11 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
 [![jSDelivr](https://data.jsdelivr.com/v1/package/npm/@jcubic/wayne/badge)](https://www.jsdelivr.com/package/npm/@jcubic/wayne)
 [![github repo](https://img.shields.io/badge/github-repo-orange?logo=github)](https://github.com/jcubic/wayne)
-[![LICENSE MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/jcubic/eleventy-plugin-svg-social-card/blob/master/LICENSE)
+[![LICENSE MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/jcubic/wayne/blob/master/LICENSE)
 
 </div>
 
-[Wayne: Open Source Service Worker Routing library for in-browser HTTP requests](https://github.com/jcubic/wayne/)
+## **Wayne**: Open Source Service Worker Routing library for in-browser HTTP requests.
 
 It's like an Express inside Service Worker.
 
