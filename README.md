@@ -3,7 +3,7 @@
        alt="Logo of Wayne library - it represents construction worker helmet and text with the name of the library" />
 </h1>
 
-[![npm](https://img.shields.io/badge/npm-0.19.1-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
+[![npm](https://img.shields.io/badge/npm-0.20.0-blue.svg)](https://www.npmjs.com/package/@jcubic/wayne)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
 [![jSDelivr](https://data.jsdelivr.com/v1/package/npm/@jcubic/wayne/badge)](https://www.jsdelivr.com/package/npm/@jcubic/wayne)
 
@@ -155,6 +155,25 @@ app.get('/external', function(req, res) {
   res.redirect('https://api.buildable.dev/@62d55492951509001abc363e/live/lorem-ipsum');
 });
 ```
+
+### First load
+
+According to the spec, the default behavior of the Service Worker is to control the HTTP requests
+after reloading the page. To make the SW always in control use this code in your SW:
+
+```javascript
+// take control of uncontrolled clients on first load
+// ref: https://web.dev/service-worker-lifecycle/#clientsclaim
+self.addEventListener('activate', (event) => {
+  event.waitUntil(clients.claim());
+});
+// don't wait for client when worker changes
+self.addEventListener('install', (event) => {
+   self.skipWaiting();
+});
+```
+> [!NOTE]
+> In version 0.20.0 you can use `app.force();` to run both.
 
 ### Handle the same extension for all requests
 
@@ -603,19 +622,6 @@ fetch outside of cache or Wayne route).
 
 This is just example of using cache with Wayne middleware, you can use different caching approach.
 
-## First load
-
-According to the spec, the default behavior of the Service Worker is to control the HTTP requests
-after reloading the page. To make the SW always in control use this code in your SW:
-
-```javascript
-// take control of uncontrolled clients on first load
-// ref: https://web.dev/service-worker-lifecycle/#clientsclaim
-self.addEventListener('activate', (event) => {
-  event.waitUntil(clients.claim());
-});
-```
-
 You can read more in the article [The service worker lifecycle](https://web.dev/service-worker-lifecycle/)
 by [Jake Archibald](https://twitter.com/jaffathecake).
 
@@ -739,4 +745,4 @@ Code contributions are also welcome.
 ## License
 
 Released with [MIT](http://opensource.org/licenses/MIT) license<br/>
-Copyright (c) 2022-2025 [Jakub T. Jankiewicz](https://jcubic.pl/me)
+Copyright (c) 2022-2026 [Jakub T. Jankiewicz](https://jcubic.pl/me)

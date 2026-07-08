@@ -1,7 +1,7 @@
 /*
- * Wayne - Server Worker Routing library (v. 0.19.1)
+ * Wayne - Server Worker Routing library (v. 0.20.0)
  *
- * Copyright (c) 2022-2025 Jakub T. Jankiewicz <https://jcubic.pl/me>
+ * Copyright (c) 2022-2026 Jakub T. Jankiewicz <https://jcubic.pl/me>
  * Released under MIT license
  */
 
@@ -410,6 +410,16 @@ async function list_dir({ fs, path }, path_name) {
         }
         return name;
     }));
+}
+
+export function force() {
+    self.addEventListener('activate', (event) => {
+        event.waitUntil(clients.claim());
+    });
+
+    self.addEventListener('install', (event) => {
+        self.skipWaiting();
+    });
 }
 
 // -----------------------------------------------------------------------------

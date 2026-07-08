@@ -1,10 +1,10 @@
 /*
- * Wayne - Server Worker Routing library (v. 0.19.1)
+ * Wayne - Server Worker Routing library (v. 0.20.0)
  *
- * Copyright (c) 2022-2025 Jakub T. Jankiewicz <https://jcubic.pl/me>
+ * Copyright (c) 2022-2026 Jakub T. Jankiewicz <https://jcubic.pl/me>
  * Released under MIT license
  *
- * Sat, 19 Apr 2025 16:19:48 +0000
+ * Wed, 08 Jul 2026 13:12:29 +0000
  */
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.wayne = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
@@ -16,14 +16,15 @@ exports.FileSystem = FileSystem;
 exports.HTTPResponse = void 0;
 exports.RouteParser = RouteParser;
 exports.Wayne = void 0;
+exports.force = force;
 exports.make_cache = make_cache;
 exports.rpc = rpc;
 exports.send = send;
 exports.travese_cache = travese_cache;
 /*
- * Wayne - Server Worker Routing library (v. 0.19.1)
+ * Wayne - Server Worker Routing library (v. 0.20.0)
  *
- * Copyright (c) 2022-2025 Jakub T. Jankiewicz <https://jcubic.pl/me>
+ * Copyright (c) 2022-2026 Jakub T. Jankiewicz <https://jcubic.pl/me>
  * Released under MIT license
  */
 
@@ -422,6 +423,14 @@ async function list_dir({
     }
     return name;
   }));
+}
+function force() {
+  self.addEventListener('activate', event => {
+    event.waitUntil(clients.claim());
+  });
+  self.addEventListener('install', event => {
+    self.skipWaiting();
+  });
 }
 
 // -----------------------------------------------------------------------------
